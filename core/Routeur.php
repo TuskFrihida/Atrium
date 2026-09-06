@@ -19,9 +19,10 @@ declare(strict_types=1);
  */
 final class Routeur
 {
-    private const CONTROLEUR_DEFAUT = 'accueil';
-    private const ACTION_DEFAUT     = 'index';
-    private const PREFIXE_ADMIN     = 'admin';
+    private const CONTROLEUR_DEFAUT       = 'accueil';
+    private const CONTROLEUR_DEFAUT_ADMIN = 'tableau-bord';
+    private const ACTION_DEFAUT           = 'index';
+    private const PREFIXE_ADMIN           = 'admin';
 
     private string $controleur = self::CONTROLEUR_DEFAUT;
     private string $action     = self::ACTION_DEFAUT;
@@ -47,12 +48,16 @@ final class Routeur
             array_shift($segments);
         }
 
-        $this->controleur = $segments[0] ?? self::CONTROLEUR_DEFAUT;
+        // L'adresse « admin » seule ouvre le tableau de bord ;
+        // l'adresse racine ouvre la vitrine publique.
+        $defaut = $this->administration ? self::CONTROLEUR_DEFAUT_ADMIN : self::CONTROLEUR_DEFAUT;
+
+        $this->controleur = $segments[0] ?? $defaut;
         $this->action     = $segments[1] ?? self::ACTION_DEFAUT;
         $this->parametres = array_slice($segments, 2);
 
         if ($this->controleur === '') {
-            $this->controleur = self::CONTROLEUR_DEFAUT;
+            $this->controleur = $defaut;
         }
 
         if ($this->action === '') {

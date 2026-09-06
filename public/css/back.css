@@ -1,0 +1,284 @@
+/* =====================================================================
+   ATRIUM — BackOffice
+   Barre laterale et barre haute sombres, zone de travail claire.
+   ===================================================================== */
+
+body.est-admin { background: var(--creme-appuye); }
+
+.admin {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+}
+
+/* ------------------------------------------- 1. BARRE LATERALE --- */
+.lateral {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 110;
+    width: 268px;
+    max-width: 86vw;
+    display: flex;
+    flex-direction: column;
+    background: var(--nuit);
+    color: var(--nuit-texte);
+    border-right: 1px solid var(--nuit-trait);
+    transform: translateX(-100%);
+    transition: transform var(--transition);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.lateral.est-ouverte { transform: none; }
+
+.lateral__marque {
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    padding: var(--e5) var(--e5) var(--e4);
+    color: var(--nuit-texte);
+}
+.lateral__marque:hover { color: var(--nuit-texte); }
+.lateral__marque .marque__signe { background: var(--creme); color: var(--nuit); }
+.lateral__marque .marque__mot { color: var(--nuit-texte); }
+.lateral__role {
+    font-size: .62rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ocre);
+    margin-top: 2px;
+}
+
+.lateral__nav { flex: 1; padding: var(--e3) var(--e3) var(--e5); }
+
+.lateral__intitule {
+    padding: var(--e4) var(--e3) var(--e2);
+    font-size: .64rem;
+    font-weight: 600;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+    color: var(--nuit-texte-doux);
+    opacity: .72;
+}
+
+.lateral__lien {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    padding: .62rem var(--e3);
+    border-radius: var(--angle);
+    font-size: .875rem;
+    font-weight: 500;
+    color: var(--nuit-texte-doux);
+    transition: background var(--transition), color var(--transition);
+}
+.lateral__lien svg { width: 17px; height: 17px; flex: none; opacity: .85; }
+.lateral__lien:hover { background: var(--nuit-relief); color: var(--nuit-texte); }
+.lateral__lien.est-actif { background: var(--nuit-panneau); color: var(--creme); font-weight: 600; }
+.lateral__lien.est-actif::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 50%;
+    width: 3px; height: 20px;
+    background: var(--ocre);
+    border-radius: 0 2px 2px 0;
+    transform: translateY(-50%);
+}
+.lateral__compteur {
+    margin-left: auto;
+    min-width: 21px;
+    padding: .05rem .38rem;
+    background: var(--terracotta);
+    color: #fff;
+    border-radius: var(--pilule);
+    font-family: var(--chiffre);
+    font-size: .68rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.lateral__pied {
+    padding: var(--e4);
+    border-top: 1px solid var(--nuit-trait);
+}
+.lateral__profil {
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    padding: var(--e3);
+    border-radius: var(--angle);
+    transition: background var(--transition);
+}
+.lateral__profil:hover { background: var(--nuit-relief); }
+.lateral__profil .compte__initiales { background: var(--ocre); color: var(--nuit); }
+.lateral__profil strong { display: block; font-size: .82rem; color: var(--nuit-texte); }
+.lateral__profil span { font-size: .7rem; color: var(--nuit-texte-doux); }
+
+/* Voile affiche derriere le tiroir sur petit ecran */
+.voile {
+    position: fixed;
+    inset: 0;
+    z-index: 105;
+    display: none;
+    background: rgba(17, 26, 24, .55);
+    backdrop-filter: blur(2px);
+}
+.voile.est-visible { display: block; animation: apparition 180ms ease-out; }
+
+/* --------------------------------------------- 2. BARRE HAUTE --- */
+.zone { display: flex; flex-direction: column; min-width: 0; }
+
+.barre-haut {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    height: 62px;
+    padding-inline: var(--e4);
+    background: var(--nuit);
+    color: var(--nuit-texte);
+    border-bottom: 1px solid var(--nuit-trait);
+}
+.barre-haut .burger__traits,
+.barre-haut .burger__traits::before,
+.barre-haut .burger__traits::after { background: var(--nuit-texte); }
+
+.barre-haut__titre {
+    font-family: var(--titre);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -.015em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.barre-haut__actions { display: flex; align-items: center; gap: var(--e2); margin-left: auto; }
+.barre-haut .bouton-icone { color: var(--nuit-texte-doux); }
+.barre-haut .bouton-icone:hover { background: var(--nuit-relief); color: var(--nuit-texte); }
+
+.lien-site {
+    display: none;
+    align-items: center;
+    gap: var(--e2);
+    padding: .38rem .72rem;
+    border: 1px solid var(--nuit-trait);
+    border-radius: var(--angle);
+    font-size: .8rem;
+    color: var(--nuit-texte-doux);
+    transition: border-color var(--transition), color var(--transition);
+}
+.lien-site:hover { border-color: var(--nuit-texte-doux); color: var(--nuit-texte); }
+.lien-site svg { width: 14px; height: 14px; }
+
+/* ------------------------------------------ 3. ZONE DE TRAVAIL --- */
+.travail {
+    flex: 1;
+    padding: var(--e5) var(--e4) var(--e8);
+    min-width: 0;
+}
+
+.admin .carte,
+.admin .stat,
+.admin .filtres { background: var(--blanc); }
+
+/* Bandeau de statistiques du tableau de bord */
+.tuiles { display: grid; gap: var(--e4); grid-template-columns: repeat(2, 1fr); }
+
+/* Deux colonnes de travail : contenu principal + colonne laterale */
+.colonnes { display: grid; gap: var(--e5); grid-template-columns: 1fr; }
+
+/* Liste d'activite recente */
+.flux { display: grid; gap: var(--e1); }
+.flux__ligne {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--e3);
+    padding: var(--e3);
+    border-radius: var(--angle);
+    transition: background var(--transition);
+}
+.flux__ligne:hover { background: rgba(22, 33, 31, .035); }
+.flux__marque {
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    flex: none;
+    background: var(--creme-appuye);
+    color: var(--ardoise);
+}
+.flux__marque svg { width: 14px; height: 14px; }
+.flux__marque--succes { background: var(--st-confirmee-fond); color: var(--st-confirmee); }
+.flux__marque--erreur { background: var(--st-refusee-fond);   color: var(--st-refusee); }
+.flux__marque--alerte { background: var(--st-attente-fond);   color: var(--st-attente); }
+.flux__texte { font-size: .85rem; line-height: 1.5; }
+.flux__heure { font-size: .72rem; color: var(--ardoise-claire); font-family: var(--chiffre); }
+
+/* Barre d'outils au-dessus d'un tableau */
+.outils {
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    flex-wrap: wrap;
+    margin-bottom: var(--e4);
+}
+.outils__recherche { position: relative; flex: 1 1 220px; }
+.outils__recherche svg {
+    position: absolute;
+    left: .8rem; top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    color: var(--ardoise-claire);
+    pointer-events: none;
+}
+.outils__recherche .champ__saisie { padding-left: 2.4rem; }
+
+/* Onglets de filtre rapide */
+.onglets {
+    display: flex;
+    gap: var(--e1);
+    padding: var(--e1);
+    background: rgba(22, 33, 31, .05);
+    border-radius: var(--angle);
+    overflow-x: auto;
+}
+.onglet {
+    display: flex;
+    align-items: center;
+    gap: var(--e2);
+    padding: .42rem .82rem;
+    border-radius: var(--angle);
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--ardoise);
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+}
+.onglet:hover { color: var(--encre); }
+.onglet.est-actif { background: var(--blanc); color: var(--encre); font-weight: 600; box-shadow: var(--relief-1); }
+.onglet__compteur {
+    font-family: var(--chiffre);
+    font-size: .7rem;
+    padding: .04rem .34rem;
+    border-radius: var(--pilule);
+    background: rgba(22, 33, 31, .08);
+}
+
+/* ---------------------------------------------- 4. RESPONSIVE --- */
+@media (min-width: 640px) {
+    .travail { padding-inline: var(--e5); }
+    .tuiles { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+    .admin { grid-template-columns: 268px 1fr; }
+    .lateral { position: sticky; top: 0; height: 100vh; transform: none; inset: auto; }
+    .voile { display: none !important; }
+    .barre-haut { height: 68px; padding-inline: var(--e6); }
+    .barre-haut .burger { display: none; }
+    .lien-site { display: inline-flex; }
+    .travail { padding: var(--e6) var(--e6) var(--e9); }
+    .tuiles { grid-template-columns: repeat(4, 1fr); }
+    .colonnes { grid-template-columns: 1.7fr 1fr; }
+}

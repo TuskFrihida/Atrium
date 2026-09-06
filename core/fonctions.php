@@ -192,3 +192,40 @@ if (!function_exists('extrait')) {
         return mb_substr($texte, 0, $longueur) . '…';
     }
 }
+
+if (!function_exists('icone')) {
+    /**
+     * Insere une icone du sprite SVG charge en tete de page.
+     * L'icone herite de la couleur du texte et reste invisible
+     * aux lecteurs d'ecran (elle est toujours accompagnee d'un libelle).
+     */
+    function icone(string $nom, string $classe = ''): string
+    {
+        if (preg_match('/^[a-z0-9-]+$/', $nom) !== 1) {
+            return '';
+        }
+
+        return '<svg' . ($classe !== '' ? ' class="' . e($classe) . '"' : '')
+             . ' aria-hidden="true" focusable="false"><use href="#i-' . $nom . '"></use></svg>';
+    }
+}
+
+if (!function_exists('initiales')) {
+    /** Initiales d'un utilisateur, pour la pastille du menu compte. */
+    function initiales(string $prenom, string $nom): string
+    {
+        return mb_strtoupper(mb_substr($prenom, 0, 1) . mb_substr($nom, 0, 1));
+    }
+}
+
+if (!function_exists('pourcentage')) {
+    /** Part en pourcentage, protegee contre la division par zero. */
+    function pourcentage(int|float $part, int|float $total, int $decimales = 0): float
+    {
+        if ($total <= 0) {
+            return 0.0;
+        }
+
+        return round(($part / $total) * 100, $decimales);
+    }
+}

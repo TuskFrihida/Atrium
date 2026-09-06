@@ -1,0 +1,276 @@
+/* =====================================================================
+   ATRIUM — Socle : jetons de design, remise a zero, typographie, grille
+   ===================================================================== */
+
+/* ------------------------------------------------------- 1. JETONS --- */
+:root {
+    /* Palette claire — FrontOffice */
+    --creme:            #FAF6F0;
+    --creme-appuye:     #F2EBE1;
+    --blanc:            #FFFDFB;
+
+    --encre:            #16211F;
+    --encre-douce:      #22302D;
+    --ardoise:          #5A6B67;
+    --ardoise-claire:   #8D9B97;
+
+    --teal:             #0E6B5E;
+    --teal-sombre:      #0A5048;
+    --teal-voile:       #E2EFEC;
+
+    --terracotta:       #E2673F;
+    --terracotta-sombre:#C24F2B;
+    --terracotta-voile: #FBEAE3;
+
+    --ocre:             #D6A756;
+    --ocre-voile:       #FAF0DC;
+
+    --trait:            rgba(22, 33, 31, .13);
+    --trait-appuye:     rgba(22, 33, 31, .26);
+
+    /* Palette sombre — BackOffice */
+    --nuit:             #111A18;
+    --nuit-panneau:     #182523;
+    --nuit-relief:      #21302D;
+    --nuit-trait:       rgba(232, 237, 235, .12);
+    --nuit-texte:       #E8EDEB;
+    --nuit-texte-doux:  #93A5A0;
+
+    /* Statuts de reservation */
+    --st-attente:       #B98520;
+    --st-attente-fond:  #FAF0DC;
+    --st-confirmee:     #0E6B5E;
+    --st-confirmee-fond:#E2EFEC;
+    --st-refusee:       #C24F2B;
+    --st-refusee-fond:  #FBEAE3;
+    --st-annulee:       #6C7B77;
+    --st-annulee-fond:  #ECEEED;
+    --st-terminee:      #3A4B47;
+    --st-terminee-fond: #E6EAE8;
+
+    /* Typographie */
+    --titre:  "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --texte:  "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+    --chiffre:ui-monospace, "SFMono-Regular", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+
+    /* Rythme vertical : echelle geometrique de raison 1,5 */
+    --e1: .25rem;  --e2: .5rem;   --e3: .75rem;  --e4: 1rem;
+    --e5: 1.5rem;  --e6: 2rem;    --e7: 3rem;    --e8: 4.5rem;  --e9: 6.5rem;
+
+    /* Angles : nets partout, ronds seulement sur les pastilles */
+    --angle:    4px;
+    --angle-l:  8px;
+    --pilule:   999px;
+
+    /* Reliefs, employes avec parcimonie */
+    --relief-1: 0 1px 2px rgba(22, 33, 31, .06);
+    --relief-2: 0 6px 22px -10px rgba(22, 33, 31, .28);
+    --relief-3: 0 24px 48px -24px rgba(22, 33, 31, .34);
+
+    --transition: 180ms cubic-bezier(.4, 0, .2, 1);
+    --largeur:    1200px;
+}
+
+/* -------------------------------------------- 2. REMISE A ZERO --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--creme);
+    color: var(--encre);
+    font-family: var(--texte);
+    font-size: 16px;
+    line-height: 1.6;
+    font-feature-settings: "cv05" 1, "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+}
+
+img, svg, video { display: block; max-width: 100%; height: auto; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+button { background: none; border: 0; cursor: pointer; }
+
+a { color: var(--teal); text-decoration: none; }
+a:hover { color: var(--teal-sombre); }
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+table { border-collapse: collapse; width: 100%; }
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--trait);
+    margin: var(--e6) 0;
+}
+
+:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+::selection { background: var(--ocre); color: var(--encre); }
+
+/* ------------------------------------------------ 3. TYPOGRAPHIE --- */
+h1, h2, h3, h4 {
+    font-family: var(--titre);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -.022em;
+    margin: 0 0 var(--e4);
+    font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 40;
+}
+
+h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); }
+h2 { font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem); }
+h3 { font-size: clamp(1.15rem, 1rem + .6vw, 1.5rem); }
+h4 { font-size: 1.0625rem; letter-spacing: -.01em; }
+
+p { margin: 0 0 var(--e4); }
+p:last-child { margin-bottom: 0; }
+
+strong, b { font-weight: 600; }
+
+small { font-size: .8125rem; }
+
+/* Sur-titre numerote : « 01 — Nos sites » */
+.oeil {
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    font-family: var(--chiffre);
+    font-size: .75rem;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+    margin-bottom: var(--e3);
+}
+.oeil::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: var(--ocre);
+    flex: none;
+}
+
+.plomb {
+    font-size: clamp(1.0625rem, 1rem + .35vw, 1.25rem);
+    color: var(--ardoise);
+    line-height: 1.6;
+    max-width: 62ch;
+}
+
+.chiffre { font-family: var(--chiffre); font-variant-numeric: tabular-nums; }
+
+.discret { color: var(--ardoise); }
+.tres-discret { color: var(--ardoise-claire); }
+
+/* ------------------------------------------------- 4. STRUCTURE --- */
+.enveloppe {
+    width: 100%;
+    max-width: var(--largeur);
+    margin-inline: auto;
+    padding-inline: var(--e4);
+}
+
+.section { padding-block: var(--e7); }
+
+.pile > * + * { margin-top: var(--e4); }
+.pile-serree > * + * { margin-top: var(--e2); }
+.pile-aeree  > * + * { margin-top: var(--e6); }
+
+.rangee {
+    display: flex;
+    align-items: center;
+    gap: var(--e3);
+    flex-wrap: wrap;
+}
+.rangee--entre { justify-content: space-between; }
+.rangee--fin   { justify-content: flex-end; }
+.rangee--serree { gap: var(--e2); }
+
+.grille { display: grid; gap: var(--e5); }
+.grille--2 { grid-template-columns: 1fr; }
+.grille--3 { grid-template-columns: 1fr; }
+.grille--4 { grid-template-columns: repeat(2, 1fr); }
+
+.pousse { margin-left: auto; }
+.pleine-largeur { width: 100%; }
+.centre { text-align: center; }
+
+/* Barre de titre de page, reutilisee dans les deux espaces */
+.titre-page {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--e4);
+    flex-wrap: wrap;
+    padding-bottom: var(--e4);
+    margin-bottom: var(--e6);
+    border-bottom: 1px solid var(--trait);
+}
+.titre-page h1, .titre-page h2 { margin-bottom: var(--e1); }
+
+/* ------------------------------------------- 5. ACCESSIBILITE --- */
+.lecteur-ecran {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.saut-contenu {
+    position: absolute;
+    left: var(--e4);
+    top: -100px;
+    z-index: 200;
+    background: var(--encre);
+    color: var(--creme);
+    padding: var(--e3) var(--e4);
+    border-radius: var(--angle);
+    transition: top var(--transition);
+}
+.saut-contenu:focus { top: var(--e4); color: var(--creme); }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* --------------------------------------------- 6. RESPONSIVE --- */
+@media (min-width: 640px) {
+    .enveloppe { padding-inline: var(--e5); }
+    .grille--2 { grid-template-columns: repeat(2, 1fr); }
+    .grille--4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+    .section { padding-block: var(--e8); }
+    .grille--3 { grid-template-columns: repeat(3, 1fr); }
+    .grille--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1240px) {
+    .enveloppe { padding-inline: var(--e6); }
+}
+
+/* --------------------------------------------- 7. IMPRESSION --- */
+@media print {
+    .entete, .pied, .lateral, .barre-haut, .sans-impression { display: none !important; }
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .carte, .tableau { break-inside: avoid; }
+    a[href]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555; }
+}

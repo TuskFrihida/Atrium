@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * AccueilControleur — page d'accueil du FrontOffice.
+ * AccueilControleur — vitrine publique.
  *
  * @package Atrium\Controllers\Front
  */
@@ -14,16 +14,23 @@ class AccueilControleur extends Controleur
     public function index(): void
     {
         $batiments = new Batiment();
+        $salles    = new Salle();
+        $pdo       = $batiments->pdo();
 
         $this->rendre('front/accueil', [
-            'titre'     => 'Accueil',
-            'batiments' => $batiments->actifs(),
-            'chiffres'  => [
-                'batiments' => $batiments->compter(['statut' => 'actif']),
-                'salles'    => (int) $batiments->pdo()
-                    ->query("SELECT COUNT(*) FROM salle WHERE statut = 'disponible'")->fetchColumn(),
-                'attente'   => (int) $batiments->pdo()
-                    ->query("SELECT COUNT(*) FROM reservation WHERE statut = 'en_attente'")->fetchColumn(),
+            'titre'      => 'Accueil',
+            'batiments'  => $batiments->actifs(),
+            'parSite'    => $salles->comptageParBatiment(),
+            'vedettes'   => $salles->enVedette(6),
+            'reperes'    => [
+                'batiments'    => $batiments->compter(['statut' => 'actif']),
+                'salles'       => $salles->compter(['statut' => 'disponible']),
+                'places'       => (int) $pdo->query(
+                    "SELECT COALESCE(SUM(capacite), 0) FROM salle WHERE statut = 'disponible'"
+                )->fetchColumn(),
+                'reservations' => (int) $pdo->query(
+                    "SELECT COUNT(*) FROM reservation WHERE statut IN ('confirmee','terminee')"
+                )->fetchColumn(),
             ],
         ]);
     }

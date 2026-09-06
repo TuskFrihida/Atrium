@@ -1,0 +1,504 @@
+/* =====================================================================
+   ATRIUM — Bibliotheque de composants
+   ===================================================================== */
+
+/* ---------------------------------------------------- 1. BOUTONS --- */
+.bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--e2);
+    padding: .68rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--angle);
+    font-size: .9375rem;
+    font-weight: 600;
+    letter-spacing: -.005em;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition),
+                border-color var(--transition), transform var(--transition);
+    white-space: nowrap;
+}
+.bouton:active { transform: translateY(1px); }
+.bouton[disabled], .bouton.est-desactive {
+    opacity: .5;
+    pointer-events: none;
+}
+.bouton svg { width: 17px; height: 17px; flex: none; }
+
+.bouton--primaire {
+    background: var(--encre);
+    color: var(--creme);
+}
+.bouton--primaire:hover { background: var(--teal); color: var(--creme); }
+
+.bouton--accent {
+    background: var(--terracotta);
+    color: #fff;
+}
+.bouton--accent:hover { background: var(--terracotta-sombre); color: #fff; }
+
+.bouton--contour {
+    background: transparent;
+    color: var(--encre);
+    border-color: var(--trait-appuye);
+}
+.bouton--contour:hover {
+    border-color: var(--encre);
+    background: var(--blanc);
+    color: var(--encre);
+}
+
+.bouton--fantome {
+    background: transparent;
+    color: var(--ardoise);
+    padding-inline: .75rem;
+}
+.bouton--fantome:hover { color: var(--encre); background: rgba(22,33,31,.05); }
+
+.bouton--danger {
+    background: transparent;
+    color: var(--terracotta-sombre);
+    border-color: rgba(194, 79, 43, .35);
+}
+.bouton--danger:hover { background: var(--terracotta-sombre); color: #fff; border-color: transparent; }
+
+.bouton--petit { padding: .42rem .8rem; font-size: .8125rem; }
+.bouton--petit svg { width: 15px; height: 15px; }
+.bouton--grand { padding: .95rem 1.9rem; font-size: 1rem; }
+.bouton--bloc  { width: 100%; }
+
+/* Bouton icone seul */
+.bouton-icone {
+    display: inline-grid;
+    place-items: center;
+    width: 34px; height: 34px;
+    border-radius: var(--angle);
+    color: var(--ardoise);
+    transition: background var(--transition), color var(--transition);
+}
+.bouton-icone:hover { background: rgba(22,33,31,.07); color: var(--encre); }
+.bouton-icone svg { width: 17px; height: 17px; }
+.bouton-icone--danger:hover { background: var(--terracotta-voile); color: var(--terracotta-sombre); }
+
+/* ----------------------------------------------------- 2. CARTES --- */
+.carte {
+    background: var(--blanc);
+    border: 1px solid var(--trait);
+    border-radius: var(--angle-l);
+    padding: var(--e5);
+}
+.carte--plate { background: transparent; border-color: var(--trait); }
+.carte--serree { padding: var(--e4); }
+.carte--survol { transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition); }
+.carte--survol:hover {
+    border-color: var(--trait-appuye);
+    box-shadow: var(--relief-2);
+    transform: translateY(-2px);
+}
+
+.carte__entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e3);
+    padding-bottom: var(--e4);
+    margin-bottom: var(--e4);
+    border-bottom: 1px solid var(--trait);
+}
+.carte__entete h3, .carte__entete h4 { margin: 0; }
+
+/* ---------------------------------------------------- 3. PASTILLES --- */
+.pastille {
+    display: inline-flex;
+    align-items: center;
+    gap: .4em;
+    padding: .28em .72em;
+    border-radius: var(--pilule);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+.pastille::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
+}
+.pastille--sans-point::before { display: none; }
+
+.pastille--en_attente { color: var(--st-attente);   background: var(--st-attente-fond); }
+.pastille--confirmee  { color: var(--st-confirmee); background: var(--st-confirmee-fond); }
+.pastille--refusee    { color: var(--st-refusee);   background: var(--st-refusee-fond); }
+.pastille--annulee    { color: var(--st-annulee);   background: var(--st-annulee-fond); }
+.pastille--terminee   { color: var(--st-terminee);  background: var(--st-terminee-fond); }
+
+.pastille--disponible   { color: var(--st-confirmee); background: var(--st-confirmee-fond); }
+.pastille--maintenance  { color: var(--st-attente);   background: var(--st-attente-fond); }
+.pastille--hors_service { color: var(--st-refusee);   background: var(--st-refusee-fond); }
+.pastille--actif        { color: var(--st-confirmee); background: var(--st-confirmee-fond); }
+.pastille--ferme,
+.pastille--suspendu     { color: var(--st-refusee);   background: var(--st-refusee-fond); }
+
+.pastille--neutre { color: var(--ardoise); background: rgba(22,33,31,.06); }
+.pastille--ocre   { color: var(--st-attente); background: var(--ocre-voile); }
+
+/* Etiquette d'equipement */
+.etiquette {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    padding: .22em .6em;
+    border: 1px solid var(--trait);
+    border-radius: var(--angle);
+    font-size: .75rem;
+    color: var(--ardoise);
+    background: var(--blanc);
+}
+.etiquette svg { width: 13px; height: 13px; }
+
+/* ------------------------------------------------ 4. FORMULAIRES --- */
+.formulaire { display: grid; gap: var(--e4); }
+.formulaire__grille { display: grid; gap: var(--e4); grid-template-columns: 1fr; }
+.formulaire__section {
+    padding-top: var(--e5);
+    margin-top: var(--e2);
+    border-top: 1px solid var(--trait);
+}
+.formulaire__actions {
+    display: flex;
+    gap: var(--e3);
+    flex-wrap: wrap;
+    padding-top: var(--e4);
+    border-top: 1px solid var(--trait);
+}
+
+.champ { display: grid; gap: var(--e2); }
+
+.champ__etiquette {
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .005em;
+    color: var(--encre);
+}
+.champ__etiquette .obligatoire { color: var(--terracotta); margin-left: 2px; }
+
+.champ__saisie {
+    width: 100%;
+    padding: .68rem .85rem;
+    background: var(--blanc);
+    border: 1px solid var(--trait-appuye);
+    border-radius: var(--angle);
+    font-size: .9375rem;
+    color: var(--encre);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    appearance: none;
+}
+.champ__saisie::placeholder { color: var(--ardoise-claire); }
+.champ__saisie:hover { border-color: var(--ardoise); }
+.champ__saisie:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(14, 107, 94, .14);
+}
+textarea.champ__saisie { min-height: 118px; resize: vertical; line-height: 1.6; }
+
+select.champ__saisie {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%235A6B67' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .9rem center;
+    padding-right: 2.4rem;
+    cursor: pointer;
+}
+
+.champ__aide { font-size: .78rem; color: var(--ardoise); }
+
+/* Message d'erreur produit par la validation JavaScript */
+.champ__erreur {
+    display: none;
+    align-items: center;
+    gap: .4em;
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--terracotta-sombre);
+}
+.champ__erreur::before {
+    content: "";
+    width: 13px; height: 13px;
+    flex: none;
+    background: var(--terracotta-sombre);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1a7 7 0 100 14A7 7 0 008 1zm0 3.2a.8.8 0 01.8.8v3.6a.8.8 0 01-1.6 0V5a.8.8 0 01.8-.8zm0 6.4a1 1 0 110 2 1 1 0 010-2z'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1a7 7 0 100 14A7 7 0 008 1zm0 3.2a.8.8 0 01.8.8v3.6a.8.8 0 01-1.6 0V5a.8.8 0 01.8-.8zm0 6.4a1 1 0 110 2 1 1 0 010-2z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+.champ.est-invalide .champ__saisie {
+    border-color: var(--terracotta);
+    background: var(--terracotta-voile);
+}
+.champ.est-invalide .champ__saisie:focus {
+    box-shadow: 0 0 0 3px rgba(226, 103, 63, .16);
+}
+.champ.est-invalide .champ__erreur { display: flex; }
+
+.champ.est-valide .champ__saisie { border-color: rgba(14, 107, 94, .5); }
+
+/* Cases a cocher et boutons radio */
+.case {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--e3);
+    padding: .62rem .8rem;
+    border: 1px solid var(--trait);
+    border-radius: var(--angle);
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+    font-size: .875rem;
+}
+.case:hover { border-color: var(--ardoise); background: var(--blanc); }
+.case input { margin-top: .2rem; accent-color: var(--teal); width: 16px; height: 16px; flex: none; }
+.case:has(input:checked) { border-color: var(--teal); background: var(--teal-voile); }
+
+.case-grille { display: grid; gap: var(--e2); grid-template-columns: 1fr; }
+
+/* Compteur de caracteres */
+.champ__compteur {
+    font-family: var(--chiffre);
+    font-size: .72rem;
+    color: var(--ardoise-claire);
+    text-align: right;
+}
+.champ__compteur.est-limite { color: var(--terracotta-sombre); }
+
+/* ----------------------------------------------------- 5. ALERTES --- */
+.alerte {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--e3);
+    padding: var(--e4);
+    border-radius: var(--angle);
+    border-left: 3px solid;
+    font-size: .9rem;
+}
+.alerte svg { width: 19px; height: 19px; flex: none; margin-top: 1px; }
+.alerte__fermer { margin-left: auto; color: inherit; opacity: .5; }
+.alerte__fermer:hover { opacity: 1; }
+
+.alerte--succes { background: var(--st-confirmee-fond); border-color: var(--teal);        color: var(--teal-sombre); }
+.alerte--erreur { background: var(--st-refusee-fond);   border-color: var(--terracotta);  color: var(--terracotta-sombre); }
+.alerte--alerte { background: var(--st-attente-fond);   border-color: var(--ocre);        color: #8A6314; }
+.alerte--info   { background: var(--creme-appuye);      border-color: var(--ardoise);     color: var(--encre-douce); }
+
+.messages { display: grid; gap: var(--e3); margin-bottom: var(--e5); }
+
+/* ---------------------------------------------------- 6. TABLEAUX --- */
+.tableau-defilant { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.tableau { font-size: .875rem; }
+.tableau th {
+    text-align: left;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+    padding: 0 var(--e3) var(--e3);
+    border-bottom: 1px solid var(--trait-appuye);
+    white-space: nowrap;
+}
+.tableau td {
+    padding: var(--e3);
+    border-bottom: 1px solid var(--trait);
+    vertical-align: middle;
+}
+.tableau tbody tr { transition: background var(--transition); }
+.tableau tbody tr:hover { background: rgba(22, 33, 31, .028); }
+.tableau tbody tr:last-child td { border-bottom: 0; }
+.tableau .colonne-actions { text-align: right; white-space: nowrap; width: 1%; }
+.tableau .principal { font-weight: 600; }
+.tableau .secondaire { font-size: .8rem; color: var(--ardoise); }
+
+/* Table triable : indicateur de colonne */
+.tableau th[data-tri] { cursor: pointer; user-select: none; }
+.tableau th[data-tri]:hover { color: var(--encre); }
+.tableau th[aria-sort="ascending"]::after  { content: " ↑"; color: var(--teal); }
+.tableau th[aria-sort="descending"]::after { content: " ↓"; color: var(--teal); }
+
+/* --------------------------------------------------- 7. ETAT VIDE --- */
+.vide {
+    text-align: center;
+    padding: var(--e8) var(--e4);
+    border: 1px dashed var(--trait-appuye);
+    border-radius: var(--angle-l);
+    color: var(--ardoise);
+}
+.vide svg { width: 40px; height: 40px; margin: 0 auto var(--e4); opacity: .32; }
+.vide h3 { margin-bottom: var(--e2); color: var(--encre); }
+
+/* -------------------------------------------------- 8. PAGINATION --- */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--e1);
+    flex-wrap: wrap;
+    margin-top: var(--e6);
+}
+.pagination a, .pagination span {
+    display: grid;
+    place-items: center;
+    min-width: 36px; height: 36px;
+    padding-inline: .5rem;
+    border-radius: var(--angle);
+    font-size: .875rem;
+    font-family: var(--chiffre);
+    color: var(--ardoise);
+    transition: background var(--transition), color var(--transition);
+}
+.pagination a:hover { background: rgba(22,33,31,.07); color: var(--encre); }
+.pagination .est-actif { background: var(--encre); color: var(--creme); font-weight: 600; }
+.pagination .est-inerte { opacity: .34; pointer-events: none; }
+
+/* ------------------------------------------------ 9. FIL D'ARIANE --- */
+.ariane {
+    display: flex;
+    align-items: center;
+    gap: var(--e2);
+    flex-wrap: wrap;
+    font-size: .8125rem;
+    color: var(--ardoise);
+    margin-bottom: var(--e4);
+}
+.ariane a { color: var(--ardoise); }
+.ariane a:hover { color: var(--encre); }
+.ariane li + li::before { content: "/"; margin-right: var(--e2); opacity: .5; }
+.ariane li { display: flex; align-items: center; }
+.ariane [aria-current] { color: var(--encre); font-weight: 500; }
+
+/* ---------------------------------------------------- 10. MODALE --- */
+.modale {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: none;
+    place-items: center;
+    padding: var(--e4);
+    background: rgba(22, 33, 31, .52);
+    backdrop-filter: blur(3px);
+}
+.modale.est-ouverte { display: grid; animation: apparition 200ms ease-out; }
+
+.modale__boite {
+    width: min(520px, 100%);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: var(--blanc);
+    border-radius: var(--angle-l);
+    padding: var(--e6);
+    box-shadow: var(--relief-3);
+    animation: monte 240ms cubic-bezier(.16, 1, .3, 1);
+}
+.modale__titre { margin-bottom: var(--e3); }
+.modale__actions {
+    display: flex;
+    gap: var(--e3);
+    justify-content: flex-end;
+    margin-top: var(--e6);
+    flex-wrap: wrap;
+}
+
+@keyframes apparition { from { opacity: 0; } to { opacity: 1; } }
+@keyframes monte { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+
+/* ------------------------------------------------ 11. STATISTIQUE --- */
+.stat {
+    display: grid;
+    gap: var(--e2);
+    padding: var(--e5);
+    background: var(--blanc);
+    border: 1px solid var(--trait);
+    border-radius: var(--angle-l);
+    position: relative;
+    overflow: hidden;
+}
+.stat::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--teal);
+}
+.stat--ocre::after       { background: var(--ocre); }
+.stat--terracotta::after { background: var(--terracotta); }
+.stat--ardoise::after    { background: var(--ardoise); }
+
+.stat__intitule {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+}
+.stat__valeur {
+    font-family: var(--titre);
+    font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+}
+.stat__detail { font-size: .8rem; color: var(--ardoise); }
+
+/* ------------------------------------------------ 12. BARRE DE JAUGE --- */
+.jauge {
+    height: 6px;
+    background: rgba(22, 33, 31, .09);
+    border-radius: var(--pilule);
+    overflow: hidden;
+}
+.jauge__part {
+    height: 100%;
+    background: var(--teal);
+    border-radius: inherit;
+    transition: width 600ms cubic-bezier(.16, 1, .3, 1);
+}
+.jauge__part--ocre       { background: var(--ocre); }
+.jauge__part--terracotta { background: var(--terracotta); }
+
+/* --------------------------------------------- 13. FILTRES --- */
+.filtres {
+    display: grid;
+    gap: var(--e3);
+    padding: var(--e4);
+    background: var(--blanc);
+    border: 1px solid var(--trait);
+    border-radius: var(--angle-l);
+    margin-bottom: var(--e6);
+}
+.filtres__grille { display: grid; gap: var(--e3); grid-template-columns: 1fr; }
+.filtres__actions { display: flex; gap: var(--e2); flex-wrap: wrap; }
+
+/* --------------------------------------------- 14. RESPONSIVE --- */
+@media (min-width: 640px) {
+    .formulaire__grille { grid-template-columns: repeat(2, 1fr); }
+    .formulaire__grille .sur-deux { grid-column: 1 / -1; }
+    .case-grille { grid-template-columns: repeat(2, 1fr); }
+    .filtres__grille { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+    .case-grille { grid-template-columns: repeat(3, 1fr); }
+    .filtres__grille { grid-template-columns: repeat(4, 1fr); }
+    .filtres { display: flex; align-items: flex-end; justify-content: space-between; }
+    .filtres__grille { flex: 1; }
+}
+
+@media (max-width: 639px) {
+    .formulaire__actions .bouton { flex: 1 1 100%; }
+    .modale__boite { padding: var(--e5); }
+    .modale__actions .bouton { flex: 1; }
+}

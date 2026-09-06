@@ -14,6 +14,7 @@ Projet Technologies Web 2A — Session Credits 2025-2026.
 | Base de donnees | MySQL 8 / MariaDB, acces par **PDO** uniquement |
 | Architecture | MVC natif, controleur frontal unique |
 | Front-end | HTML5 semantique, CSS3 ecrit a la main, JavaScript ES6 natif |
+| Polices | Fraunces et Inter, hebergees localement (aucune requete externe) |
 | Serveur local | XAMPP (Apache + MySQL) |
 
 Aucun framework (Symfony, Laravel, Angular...) ni librairie CSS
@@ -37,7 +38,8 @@ app/
   models/       une classe par entite metier
   controllers/  front/ pour le FrontOffice, back/ pour le BackOffice
   views/        gabarits, vues et modeles de courriels
-public/     feuilles de style, scripts, images, fichiers televerses
+public/     css/ (base, composants, front, back, polices), js/,
+            fonts/ (polices hebergees localement), uploads/
 database/   schema SQL et jeu de donnees de demonstration
 storage/    journaux applicatifs et archives de courriels
 ```
@@ -80,7 +82,7 @@ Points notables :
 - [x] Structure MVC, configuration, controleur frontal
 - [x] Schema de la base de donnees
 - [x] Noyau MVC (routeur, modele generique, session)
-- [ ] Charte graphique et gabarits responsifs
+- [x] Charte graphique et gabarits responsifs
 - [ ] Authentification et gestion des roles
 - [ ] CRUD Batiments et Etages
 - [ ] CRUD Salles, equipements, maintenance
