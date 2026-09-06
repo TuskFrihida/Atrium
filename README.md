@@ -110,7 +110,7 @@ donnee invalide n'atteigne la base.
 - [x] Charte graphique et gabarits responsifs
 - [x] Authentification, roles et controles de saisie
 - [x] CRUD Batiments et Etages
-- [ ] CRUD Salles, equipements, maintenance
+- [x] CRUD Salles, equipements, maintenance
 - [ ] Moteur de reservation et de detection de conflits
 - [ ] Calendrier interactif
 - [ ] Validation des demandes et deplacement de reunions

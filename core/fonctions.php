@@ -284,3 +284,25 @@ if (!function_exists('aria_tri')) {
         return ' aria-sort="' . (strtolower($sensCourant) === 'asc' ? 'ascending' : 'descending') . '"';
     }
 }
+
+if (!function_exists('versDecimal')) {
+    /**
+     * Convertit un nombre saisi a la francaise en valeur exploitable
+     * par SQL : « 25,5 » devient 25.5.
+     *
+     * Sans cette conversion, MySQL en mode strict refuse la valeur
+     * (et, sans mode strict, l'enregistrerait silencieusement a 25).
+     * Retourne null pour une saisie vide, afin que la colonne recoive
+     * NULL plutot qu'un zero trompeur.
+     */
+    function versDecimal(mixed $valeur): ?float
+    {
+        if (!is_scalar($valeur)) {
+            return null;
+        }
+
+        $texte = trim(str_replace([' ', ','], ['', '.'], (string) $valeur));
+
+        return $texte === '' || !is_numeric($texte) ? null : (float) $texte;
+    }
+}
