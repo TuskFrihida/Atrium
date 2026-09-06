@@ -109,7 +109,7 @@ donnee invalide n'atteigne la base.
 - [x] Noyau MVC (routeur, modele generique, session)
 - [x] Charte graphique et gabarits responsifs
 - [x] Authentification, roles et controles de saisie
-- [ ] CRUD Batiments et Etages
+- [x] CRUD Batiments et Etages
 - [ ] CRUD Salles, equipements, maintenance
 - [ ] Moteur de reservation et de detection de conflits
 - [ ] Calendrier interactif

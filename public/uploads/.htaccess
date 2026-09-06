@@ -1,0 +1,16 @@
+# ============================================================
+#  Dossier des fichiers televerses par les utilisateurs.
+#  Aucun script ne doit pouvoir y etre execute, meme si un
+#  fichier malveillant parvenait a franchir les controles.
+# ============================================================
+
+Options -Indexes -ExecCGI
+
+# Interdiction pure et simple de servir un fichier executable.
+<FilesMatch "\.(?i:php|phtml|php[0-9]|phps|pht|inc|cgi|pl|py|rb|sh|asp|aspx|jsp|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# Ceinture supplementaire : tout script eventuel est traite comme
+# du texte brut plutot que d'etre interprete.
+AddType text/plain .php .phtml .php3 .php4 .php5 .php7 .phps .pl .py .cgi

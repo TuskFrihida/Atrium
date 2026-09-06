@@ -229,3 +229,58 @@ if (!function_exists('pourcentage')) {
         return round(($part / $total) * 100, $decimales);
     }
 }
+
+if (!function_exists('urlAvec')) {
+    /**
+     * Reconstruit l'adresse courante en modifiant certains parametres.
+     * Indispensable a la pagination et au tri : changer de page ne doit
+     * pas faire perdre la recherche et les filtres en cours.
+     *
+     * Une valeur nulle retire le parametre.
+     *
+     * @param array<string, mixed> $parametres
+     */
+    function urlAvec(array $parametres): string
+    {
+        $requete = Requete::tousGet();
+
+        foreach ($parametres as $cle => $valeur) {
+            if ($valeur === null || $valeur === '') {
+                unset($requete[$cle]);
+            } else {
+                $requete[$cle] = $valeur;
+            }
+        }
+
+        $chaine = http_build_query($requete);
+
+        return url(Requete::chemin()) . ($chaine !== '' ? '?' . $chaine : '');
+    }
+}
+
+if (!function_exists('senstri')) {
+    /**
+     * Sens de tri inverse de celui en cours, pour les en-tetes de
+     * colonne cliquables.
+     */
+    function senstri(string $colonne, string $colonneCourante, string $sensCourant): string
+    {
+        if ($colonne !== $colonneCourante) {
+            return 'asc';
+        }
+
+        return strtolower($sensCourant) === 'asc' ? 'desc' : 'asc';
+    }
+}
+
+if (!function_exists('aria_tri')) {
+    /** Attribut aria-sort de l'en-tete de colonne, pour les lecteurs d'ecran. */
+    function aria_tri(string $colonne, string $colonneCourante, string $sensCourant): string
+    {
+        if ($colonne !== $colonneCourante) {
+            return '';
+        }
+
+        return ' aria-sort="' . (strtolower($sensCourant) === 'asc' ? 'ascending' : 'descending') . '"';
+    }
+}

@@ -310,6 +310,52 @@
         });
     }
 
+    /**
+     * Controle des champs de fichier.
+     *
+     * L'attribut HTML « accept » n'est pas utilise : il ne fait que
+     * filtrer la boite de dialogue et n'empeche aucun envoi. Le type
+     * et le poids sont donc verifies ici, puis a nouveau par le serveur
+     * qui, lui, lit les octets du fichier au lieu de croire son nom.
+     */
+    function fichiers(formulaire) {
+        formulaire.querySelectorAll('[data-fichier]').forEach(function (champ) {
+            var types  = champ.getAttribute('data-fichier').split(',');
+            var poids  = parseInt(champ.getAttribute('data-poids-max'), 10) || 0;
+            var libelle = champ.getAttribute('data-libelle') || 'Fichier';
+
+            function controler() {
+                var f = champ.files && champ.files[0];
+
+                if (!f) { marquerValide(champ); return true; }
+
+                if (types.indexOf(f.type) === -1) {
+                    marquerErreur(champ, '« ' + libelle + ' » : format non accepté. Formats admis : JPEG, PNG et WebP.');
+                    return false;
+                }
+
+                if (poids && f.size > poids) {
+                    marquerErreur(champ, '« ' + libelle + ' » : le fichier dépasse '
+                        + (Math.round(poids / 1048576 * 10) / 10).toString().replace('.', ',') + ' Mo.');
+                    return false;
+                }
+
+                marquerValide(champ);
+                return true;
+            }
+
+            champ.addEventListener('change', controler);
+
+            formulaire.addEventListener('submit', function (evenement) {
+                if (!controler()) {
+                    evenement.preventDefault();
+                    evenement.stopPropagation();
+                    champ.focus();
+                }
+            });
+        });
+    }
+
     /* =============================================== BRANCHEMENT ===== */
     function equiper(formulaire) {
         // Ceinture et bretelles : meme si l'attribut est deja pose dans
@@ -355,6 +401,7 @@
 
         compteurs(formulaire);
         forceMotDePasse(formulaire);
+        fichiers(formulaire);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
