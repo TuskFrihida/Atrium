@@ -31,7 +31,8 @@ Aucun framework (Symfony, Laravel, Angular...) ni librairie CSS
 
 ```
 config/     configuration et connexion PDO
-core/       noyau MVC (routeur, modele, controleur, validation, securite)
+core/       noyau MVC : Routeur, Modele, Controleur, Session, Flash,
+            Csrf, Requete, Autoloader et fonctions d'aide aux vues
 app/
   models/       une classe par entite metier
   controllers/  front/ pour le FrontOffice, back/ pour le BackOffice
@@ -78,7 +79,7 @@ Points notables :
 
 - [x] Structure MVC, configuration, controleur frontal
 - [x] Schema de la base de donnees
-- [ ] Noyau MVC (routeur, modele generique, session)
+- [x] Noyau MVC (routeur, modele generique, session)
 - [ ] Charte graphique et gabarits responsifs
 - [ ] Authentification et gestion des roles
 - [ ] CRUD Batiments et Etages

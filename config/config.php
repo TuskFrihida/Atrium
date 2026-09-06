@@ -44,6 +44,19 @@ define('CHEMIN_STOCKAGE',  RACINE . DIRECTORY_SEPARATOR . 'storage');
 $__dossier = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
 $__dossier = str_replace(DIRECTORY_SEPARATOR, '/', $__dossier);
 $__dossier = ($__dossier === '/' || $__dossier === '.' || $__dossier === '') ? '' : rtrim($__dossier, '/');
+
+/*
+ |  Chaque segment est encode. Indispensable si le dossier du projet
+ |  porte des accents : le navigateur demande /Syst%C3%A8me-... et le
+ |  cookie de session doit etre depose sur EXACTEMENT ce chemin, sans
+ |  quoi il n'est jamais renvoye et la session est perdue a chaque page.
+ |  Le decodage prealable evite tout double encodage.
+ */
+$__dossier = implode('/', array_map(
+    static fn (string $segment): string => rawurlencode(rawurldecode($segment)),
+    explode('/', $__dossier)
+));
+
 define('BASE_URL',   $__dossier . '/');
 define('URL_ASSETS', BASE_URL . 'public/');
 unset($__dossier);
