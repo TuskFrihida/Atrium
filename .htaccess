@@ -1,0 +1,37 @@
+# ============================================================
+#  ATRIUM — Configuration Apache
+# ============================================================
+
+# Pas de listing de dossier, pas de negociation de contenu
+# (MultiViews perturberait la reecriture d'URL).
+Options -Indexes -MultiViews
+
+# Encodage par defaut des fichiers servis
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Un fichier ou un dossier reellement present est servi tel quel
+    # (feuilles de style, scripts, images televersees...).
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Tout le reste est confie au controleur frontal.
+    # QSA conserve la chaine de requete existante (?page=2 par exemple).
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "same-origin"
+</IfModule>
+
+# Aucun cache sur les pages PHP (donnees de reservation toujours fraiches)
+<FilesMatch "\.php$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-store, no-cache, must-revalidate"
+    </IfModule>
+</FilesMatch>

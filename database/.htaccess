@@ -1,0 +1,3 @@
+# Dossier applicatif : aucun acces direct par le navigateur.
+# Tout doit passer par le controleur frontal (index.php).
+Require all denied

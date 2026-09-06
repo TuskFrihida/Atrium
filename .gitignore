@@ -1,0 +1,28 @@
+# --- Dependances et artefacts locaux ---
+/vendor/
+/node_modules/
+
+# --- Identifiants SMTP locaux (jamais versionnes) ---
+/config/mail.local.php
+
+# --- Journaux et courriels archives ---
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/mails/*
+!/storage/mails/.gitkeep
+*.log
+
+# --- Fichiers televerses par les utilisateurs ---
+/public/uploads/salles/*
+/public/uploads/batiments/*
+/public/uploads/avatars/*
+!/public/uploads/*/.gitkeep
+
+# --- Systeme et editeurs ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
