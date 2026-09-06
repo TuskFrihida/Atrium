@@ -41,10 +41,43 @@ database/   schema SQL et jeu de donnees de demonstration
 storage/    journaux applicatifs et archives de courriels
 ```
 
+## Modele de donnees
+
+Neuf tables reliees par cles etrangeres, plus deux vues de jointure
+reutilisees par les statistiques et les rapports.
+
+```
+batiment 1--n etage 1--n salle 1--n reservation n--1 utilisateur
+                              |                    ^
+                              |                    | traite_par (auto-jointure)
+                              n
+                        salle_equipement n--1 equipement
+
+salle 1--n maintenance          utilisateur 1--n notification
+```
+
+Points notables :
+
+- suppression en cascade sur toute la chaine batiment > etage > salle > reservation ;
+- `traite_par` en `ON DELETE SET NULL` : l'historique d'une reservation survit
+  au depart du gestionnaire qui l'a validee ;
+- contraintes `CHECK` sur les creneaux (`heure_fin > heure_debut`), la capacite,
+  le nombre de participants et le format des adresses electroniques ;
+- index composite `idx_reservation_conflit` couvrant integralement la requete
+  de detection de chevauchement.
+
+## Comptes de demonstration
+
+| Role | Adresse | Mot de passe |
+|---|---|---|
+| Administrateur | admin@atrium.tn | Atrium2026! |
+| Gestionnaire | yassine.trabelsi@atrium.tn | Atrium2026! |
+| Utilisateur | mehdi.chaabane@atrium.tn | Atrium2026! |
+
 ## Etat d'avancement
 
 - [x] Structure MVC, configuration, controleur frontal
-- [ ] Schema de la base de donnees
+- [x] Schema de la base de donnees
 - [ ] Noyau MVC (routeur, modele generique, session)
 - [ ] Charte graphique et gabarits responsifs
 - [ ] Authentification et gestion des roles

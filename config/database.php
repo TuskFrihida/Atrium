@@ -67,6 +67,14 @@ final class Database
             self::$pdo = new PDO($dsn, DB_UTILISATEUR, DB_MOTDEPASSE, $options);
             // Fuseau horaire MySQL aligne sur celui de PHP (coherence des dates).
             self::$pdo->exec("SET time_zone = '" . self::decalageUtc() . "'");
+
+            // MariaDB n'active pas le mode strict par defaut : une valeur trop
+            // longue serait tronquee silencieusement au lieu d'etre refusee.
+            // On l'exige explicitement : une donnee invalide doit echouer.
+            self::$pdo->exec(
+                "SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,"
+                . "NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'"
+            );
         } catch (PDOException $e) {
             self::echouer($e);
         }
