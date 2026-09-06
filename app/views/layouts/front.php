@@ -215,6 +215,7 @@ if ($connecte !== null) {
 </footer>
 
 <script src="<?= e(ressource('js/atrium.js')) ?>" defer></script>
+<script src="<?= e(ressource('js/validation.js')) ?>" defer></script>
 <?php if (!empty($scripts)): foreach ($scripts as $script): ?>
 <script src="<?= e(ressource('js/' . $script)) ?>" defer></script>
 <?php endforeach; endif; ?>

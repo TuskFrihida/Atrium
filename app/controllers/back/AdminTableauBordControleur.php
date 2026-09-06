@@ -4,13 +4,13 @@ declare(strict_types=1);
 /**
  * AdminTableauBordControleur — page d'accueil du BackOffice.
  *
- * Le controle d'acces par role sera branche avec l'authentification.
+ * L'acces est verrouille par AdminControleur : administrateurs et
+ * gestionnaires uniquement.
  *
  * @package Atrium\Controllers\Back
  */
-class AdminTableauBordControleur extends Controleur
+class AdminTableauBordControleur extends AdminControleur
 {
-    protected string $gabarit  = 'back';
     protected string $rubrique = 'tableau-bord';
 
     public function index(): void

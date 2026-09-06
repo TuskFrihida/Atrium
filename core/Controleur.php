@@ -171,4 +171,73 @@ abstract class Controleur
             $this->retour();
         }
     }
+
+    // =================================================================
+    //  CONTROLE D'ACCES
+    // =================================================================
+
+    /**
+     * Exige un utilisateur connecte.
+     * L'adresse demandee est memorisee : apres identification,
+     * l'utilisateur est renvoye la ou il voulait aller.
+     */
+    protected function exigerConnexion(): void
+    {
+        if (Auth::estConnecte()) {
+            return;
+        }
+
+        if (Requete::estGet()) {
+            Session::definir('__destination', Requete::chemin());
+        }
+
+        if (Requete::estAjax()) {
+            $this->json(['succes' => false, 'message' => 'Session expirée. Reconnectez-vous.'], 401);
+        }
+
+        Flash::alerte('Connectez-vous pour accéder à cette page.');
+        $this->rediriger('connexion');
+    }
+
+    /**
+     * Exige un utilisateur connecte possedant l'un des roles indiques.
+     *
+     * L'affichage conditionnel d'un menu n'est PAS une securite :
+     * c'est cette methode, cote serveur, qui protege reellement.
+     */
+    protected function exigerRole(string ...$roles): void
+    {
+        $this->exigerConnexion();
+
+        if (!Auth::aRole(...$roles)) {
+            $this->interdit(
+                'Cette page est réservée aux profils suivants : '
+                . implode(', ', array_map('libelleRole', $roles)) . '.'
+            );
+        }
+    }
+
+    /** Reserve une page aux visiteurs non identifies (connexion, inscription). */
+    protected function exigerVisiteur(): void
+    {
+        if (Auth::estConnecte()) {
+            $this->rediriger(Auth::accedeAdministration() ? 'admin' : '');
+        }
+    }
+
+    /**
+     * Retour d'un formulaire refuse : on conserve la saisie et les
+     * erreurs, puis on redirige (schema Post/Redirect/Get).
+     *
+     * @param array<string, string> $erreurs
+     * @param array<string, mixed>  $saisie
+     */
+    protected function refuser(string $chemin, array $erreurs, array $saisie, ?string $message = null): never
+    {
+        Flash::memoriserErreurs($erreurs);
+        Flash::memoriserSaisie($saisie);
+        Flash::erreur($message ?? (reset($erreurs) ?: 'Le formulaire comporte des erreurs.'));
+
+        $this->rediriger($chemin);
+    }
 }

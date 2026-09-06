@@ -32,6 +32,20 @@ final class Routeur
 
     private bool $administration = false;
 
+    /**
+     * Raccourcis d'adresse : des chemins courts et lisibles pour les
+     * pages les plus frequentes, sans multiplier les controleurs.
+     * « /connexion » est plus parlant que « /auth/connexion ».
+     */
+    private const RACCOURCIS = [
+        'connexion'           => 'auth/connexion',
+        'inscription'         => 'auth/inscription',
+        'deconnexion'         => 'auth/deconnexion',
+        'mot-de-passe-oublie' => 'auth/mot-de-passe-oublie',
+        'profil'              => 'compte/profil',
+        'notification'        => 'compte/notifications',
+    ];
+
     public function __construct(private readonly string $adresse)
     {
     }
@@ -99,6 +113,11 @@ final class Routeur
 
         if ($adresse === '') {
             return [];
+        }
+
+        // Un raccourci est remplace par son chemin complet avant analyse.
+        if (isset(self::RACCOURCIS[$adresse])) {
+            $adresse = self::RACCOURCIS[$adresse];
         }
 
         $segments = explode('/', $adresse);

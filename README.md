@@ -69,6 +69,31 @@ Points notables :
 - index composite `idx_reservation_conflit` couvrant integralement la requete
   de detection de chevauchement.
 
+## Controles de saisie
+
+Le cahier des charges interdit la validation HTML5. Le projet ne
+contient donc aucun attribut `required`, `pattern`, `min`, `max`,
+`maxlength`, ni aucun `type="email"`, `type="number"` ou `type="date"`.
+Tous les champs sont de type `text`, `password` ou `hidden`, et chaque
+formulaire porte `novalidate`.
+
+Les regles sont declarees une seule fois, sur le champ :
+
+```html
+<input type="text" name="email" data-regles="requis|email|max:150"
+       data-libelle="Adresse electronique">
+```
+
+Deux moteurs interpretent cette meme grammaire :
+
+- `public/js/validation.js` signale l'erreur immediatement, a la sortie
+  du champ puis a chaque frappe tant qu'elle persiste ;
+- `core/Validateur.php` la rejoue cote serveur et fait autorite.
+
+Les seize regles produisent des messages strictement identiques dans
+les deux moteurs. Le JavaScript peut donc etre desactive sans qu'aucune
+donnee invalide n'atteigne la base.
+
 ## Comptes de demonstration
 
 | Role | Adresse | Mot de passe |
@@ -83,7 +108,7 @@ Points notables :
 - [x] Schema de la base de donnees
 - [x] Noyau MVC (routeur, modele generique, session)
 - [x] Charte graphique et gabarits responsifs
-- [ ] Authentification et gestion des roles
+- [x] Authentification, roles et controles de saisie
 - [ ] CRUD Batiments et Etages
 - [ ] CRUD Salles, equipements, maintenance
 - [ ] Moteur de reservation et de detection de conflits
