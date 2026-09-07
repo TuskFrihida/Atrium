@@ -128,6 +128,32 @@ donnent exactement une reservation.
 | Gestionnaire | yassine.trabelsi@atrium.tn | Atrium2026! |
 | Utilisateur | mehdi.chaabane@atrium.tn | Atrium2026! |
 
+## Le jeu de donnees
+
+`database/seed.sql` contient une cinquantaine de reservations ecrites a
+la main : lisibles, commentees, elles suffisent a faire fonctionner
+l'application. Elles ne suffisent pas a faire parler les statistiques —
+cinquante reunions reparties sur vingt salles donnent un taux
+d'occupation de 1 %, exact mais inexploitable.
+
+`database/generer-reservations.php` remplit donc le calendrier a
+l'echelle reelle :
+
+    php database\generer-reservations.php               (juin -> decembre 2026)
+    php database\generer-reservations.php --graine=41   (couche supplementaire)
+    php database\generer-reservations.php --vider       (retour au jeu ecrit a la main)
+
+Le script n'insere RIEN sans passer par la meme detection de conflits
+que l'application : creneau deja pris, salle en maintenance,
+chevauchement, la ligne est ecartee. Il est donc accessoirement un test
+de charge du moteur — et naturellement idempotent, puisqu'une seconde
+execution trouve tout occupe.
+
+Quatre passes donnent environ 10 500 reservations sur sept mois, soit un
+taux d'occupation d'environ 33 % en periode haute. Le moteur en a
+refuse pres de 4 700 pour cause de chevauchement, sans qu'une seule
+double reservation ne subsiste.
+
 ## Le calendrier
 
 Deux vues, ecrites a la main en JavaScript natif :
@@ -250,7 +276,8 @@ aucun identifiant ne part dans l'historique du depot.
 
 ### Rappels automatiques
 
-    php binappels.php
+    php bin
+appels.php
 
 Previent les auteurs des reunions confirmees qui commencent dans les
 prochaines heures. Le script est idempotent — il peut tourner toutes
