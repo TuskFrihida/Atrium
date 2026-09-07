@@ -111,16 +111,26 @@ if (!function_exists('jourFr')) {
 }
 
 if (!function_exists('moisFr')) {
-    /** Nom francais du mois, a partir de son numero. */
+    /**
+     * Nom francais du mois, a partir de son numero.
+     *
+     * La forme courte n'est pas une troncature : « decembre » tronque
+     * a quatre lettres donnerait « dece », qui ne se lit pas. Les
+     * abreviations d'usage sont donc ecrites en toutes lettres.
+     */
     function moisFr(int $numero, bool $court = false): string
     {
-        $mois = [
-            1 => 'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin',
-            'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre',
+        $longs = [
+            1 => 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+            'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
         ];
-        $nom = $mois[$numero] ?? '';
 
-        return $court ? mb_substr($nom, 0, 4) : $nom;
+        $courts = [
+            1 => 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
+            'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.',
+        ];
+
+        return ($court ? $courts[$numero] : $longs[$numero]) ?? '';
     }
 }
 

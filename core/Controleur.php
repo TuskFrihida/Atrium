@@ -33,31 +33,47 @@ abstract class Controleur
      * un gabarit unique pour tout le site.
      *
      * @param string               $vue     Chemin relatif depuis app/views, sans extension
-     * @param array<string, mixed> $donnees Variables mises a disposition de la vue
+     * @param array<string, mixed> $variables Variables mises a disposition de la vue
      */
-    protected function rendre(string $vue, array $donnees = [], ?string $gabarit = null): void
+    protected function rendre(string $vue, array $variables = [], ?string $gabarit = null): void
     {
-        $fichier = $this->cheminVue($vue);
+        /*
+         |  Les variables locales de cette methode portent un prefixe
+         |  « __ » pour une raison tres concrete : extract() n'ecrase
+         |  pas une variable existante (EXTR_SKIP). Une vue attendant
+         |  une variable nommee $vue, $donnees ou $gabarit recevrait
+         |  donc silencieusement celle du controleur, et afficherait
+         |  n'importe quoi sans la moindre erreur. Le prefixe rend la
+         |  collision impossible.
+         |
+         |  Le tableau recu s'appelle donc $variables, et non plus
+         |  $donnees, sans quoi une vue attendant $donnees recevrait
+         |  ce tableau-la. Seul $contenu reste reserve : c'est le nom
+         |  que les gabarits attendent pour le corps de la page.
+         */
+        $__fichier = $this->cheminVue($vue);
 
-        $donnees['titre']    = $donnees['titre']    ?? $this->titre;
-        $donnees['rubrique'] = $donnees['rubrique'] ?? $this->rubrique;
+        $variables['titre']    = $variables['titre']    ?? $this->titre;
+        $variables['rubrique'] = $variables['rubrique'] ?? $this->rubrique;
 
-        extract($donnees, EXTR_SKIP);
+        $__gabarit = $gabarit ?? $this->gabarit;
+
+        extract($variables, EXTR_SKIP);
 
         ob_start();
-        require $fichier;
+        require $__fichier;
         $contenu = ob_get_clean();
 
-        $gabarit = $gabarit ?? $this->gabarit;
-        $fichierGabarit = CHEMIN_VUES . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $gabarit . '.php';
+        $__gabaritFichier = CHEMIN_VUES . DIRECTORY_SEPARATOR . 'layouts'
+                          . DIRECTORY_SEPARATOR . $__gabarit . '.php';
 
-        if (!is_file($fichierGabarit)) {
+        if (!is_file($__gabaritFichier)) {
             echo $contenu;
 
             return;
         }
 
-        require $fichierGabarit;
+        require $__gabaritFichier;
     }
 
     /**
@@ -65,16 +81,16 @@ abstract class Controleur
      * chaine. Utile pour les fragments recharges en AJAX et pour les
      * corps de courriels.
      *
-     * @param array<string, mixed> $donnees
+     * @param array<string, mixed> $variables
      */
-    protected function fragment(string $vue, array $donnees = []): string
+    protected function fragment(string $vue, array $variables = []): string
     {
-        $fichier = $this->cheminVue($vue);
+        $__fichier = $this->cheminVue($vue);
 
-        extract($donnees, EXTR_SKIP);
+        extract($variables, EXTR_SKIP);
 
         ob_start();
-        require $fichier;
+        require $__fichier;
 
         return (string) ob_get_clean();
     }

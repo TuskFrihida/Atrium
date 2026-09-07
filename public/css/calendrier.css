@@ -1,0 +1,466 @@
+/* =====================================================================
+   ATRIUM — Calendrier
+   ---------------------------------------------------------------------
+   Feuille chargee uniquement sur les deux ecrans d'agenda, en plus des
+   feuilles communes. Elle n'introduit aucune couleur nouvelle : les
+   statuts reprennent exactement les jetons deja definis dans base.css,
+   pour qu'une pastille et un bloc d'agenda ne racontent jamais deux
+   histoires differentes.
+   ===================================================================== */
+
+.calendrier {
+    --cal-heure:  clamp(38px, 4.4vh, 54px);   /* hauteur d'une heure, vue semaine */
+    --cal-gouttiere: 58px;                    /* colonne des heures */
+}
+
+/* ----------------------------------------------------- 1. FILTRES --- */
+
+.cal__filtres { margin-bottom: var(--e5); }
+
+.cal__equipements {
+    margin-top: var(--e4);
+    border-top: 1px solid var(--trait);
+    padding-top: var(--e4);
+}
+.cal__equipements summary {
+    cursor: pointer;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+}
+.cal__equipements summary::marker { color: var(--teal); }
+
+.cal__cases {
+    display: grid;
+    gap: var(--e2);
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    margin-top: var(--e3);
+}
+
+.cal__resume {
+    font-size: .82rem;
+    color: var(--ardoise);
+    margin-left: auto;
+    align-self: center;
+}
+
+/* ------------------------------------------------ 2. BARRE DE VUE --- */
+
+.cal__barre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e4);
+    flex-wrap: wrap;
+    padding-bottom: var(--e4);
+    margin-bottom: var(--e4);
+    border-bottom: 1px solid var(--trait);
+}
+
+.cal__navigation { display: flex; align-items: center; gap: var(--e2); }
+
+.cal__intitule {
+    font-family: var(--titre);
+    font-size: clamp(1.05rem, .95rem + .5vw, 1.35rem);
+    margin: 0;
+    text-align: center;
+    flex: 1 1 12rem;
+    text-transform: capitalize;
+}
+
+.cal__bascule {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--trait);
+    border-radius: 999px;
+    background: rgba(22, 33, 31, .04);
+}
+
+.cal__onglet {
+    padding: .32rem .95rem;
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--ardoise);
+    transition: background var(--transition), color var(--transition);
+}
+.cal__onglet:hover { color: var(--encre); }
+.cal__onglet.est-actif {
+    background: var(--encre);
+    color: var(--creme);
+}
+
+/* -------------------------------------------------- 3. CHARGEMENT --- */
+
+.cal__corps { position: relative; min-height: 340px; }
+
+.calendrier.est-en-charge .cal__corps { opacity: .45; transition: opacity .15s; }
+
+.cal__attente {
+    display: grid;
+    place-items: center;
+    gap: var(--e3);
+    min-height: 300px;
+    color: var(--ardoise);
+    font-size: .9rem;
+    text-align: center;
+}
+
+/* ---------------------------------------------------- 4. VUE MOIS --- */
+
+.cal-mois__entete {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    margin-bottom: var(--e2);
+}
+.cal-mois__entete span {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+    text-align: center;
+}
+
+.cal-mois__grille {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: var(--trait);
+    border: 1px solid var(--trait);
+    border-radius: var(--angle-l);
+    overflow: hidden;
+}
+
+.cal-jour {
+    display: flex;
+    flex-direction: column;
+    gap: var(--e2);
+    min-height: 118px;
+    padding: var(--e2) var(--e2) 0;
+    background: var(--blanc);
+    text-align: left;
+    position: relative;
+    transition: background var(--transition);
+}
+.cal-jour:hover { background: var(--creme); }
+
+.cal-jour--weekend { background: var(--creme); }
+.cal-jour--hors    { opacity: .42; }
+.cal-jour--passe .cal-jour__numero { color: var(--ardoise-claire); }
+
+.cal-jour--aujourdhui { box-shadow: inset 0 0 0 2px var(--teal); }
+
+.cal-jour__haut {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e2);
+}
+
+.cal-jour__numero {
+    font-family: var(--chiffre);
+    font-size: .92rem;
+    font-weight: 600;
+}
+.cal-jour--aujourdhui .cal-jour__numero {
+    background: var(--teal);
+    color: var(--creme);
+    border-radius: 999px;
+    width: 1.55rem;
+    height: 1.55rem;
+    display: grid;
+    place-items: center;
+}
+
+.cal-jour__compte {
+    font-size: .68rem;
+    font-weight: 600;
+    color: var(--ardoise);
+    background: rgba(22, 33, 31, .06);
+    border-radius: 999px;
+    padding: .05rem .42rem;
+}
+
+.cal-jour__liste { display: grid; gap: 2px; }
+
+.cal-puce {
+    display: flex;
+    align-items: baseline;
+    gap: .3rem;
+    font-size: .68rem;
+    line-height: 1.35;
+    padding: .1rem .3rem;
+    border-radius: 3px;
+    border-left: 3px solid var(--st-confirmee);
+    background: var(--st-confirmee-fond);
+    color: var(--st-confirmee);
+    overflow: hidden;
+}
+.cal-puce__heure { font-family: var(--chiffre); font-weight: 600; flex: none; }
+.cal-puce__texte { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.cal-puce--en_attente {
+    border-left-color: var(--st-attente);
+    background: var(--st-attente-fond);
+    color: var(--st-attente);
+}
+.cal-puce--maintenance {
+    border-left-color: var(--ardoise);
+    background: var(--st-annulee-fond);
+    color: var(--st-annulee);
+}
+.cal-puce--mien {
+    border-left-color: var(--terracotta);
+    background: var(--terracotta-voile);
+    color: var(--terracotta-sombre);
+}
+
+.cal-jour__reste { font-size: .66rem; color: var(--ardoise); padding-left: .3rem; }
+
+/* La jauge d'occupation occupe le bas de la case. */
+.cal-jour__jauge {
+    margin-top: auto;
+    height: 4px;
+    background: rgba(22, 33, 31, .07);
+    display: block;
+}
+.cal-jour__barre {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--ocre));
+}
+
+/* ------------------------------------------------- 5. VUE SEMAINE --- */
+
+.cal-semaine { --cal-plages: 12; }
+
+.cal-semaine__entete,
+.cal-semaine__corps {
+    display: grid;
+    grid-template-columns: var(--cal-gouttiere) repeat(7, minmax(96px, 1fr));
+}
+
+.cal-semaine__entete {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--creme);
+    border-bottom: 1px solid var(--trait-appuye);
+}
+
+.cal-semaine__jour {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: var(--e2) var(--e1);
+    border-left: 1px solid var(--trait);
+}
+.cal-semaine__jour.est-weekend { background: rgba(22, 33, 31, .03); }
+
+.cal-semaine__nom {
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ardoise);
+}
+.cal-semaine__num {
+    font-family: var(--chiffre);
+    font-size: .92rem;
+    font-weight: 600;
+}
+.cal-semaine__jour.est-aujourdhui .cal-semaine__num { color: var(--teal); }
+.cal-semaine__jour.est-aujourdhui .cal-semaine__nom { color: var(--teal); }
+
+.cal-semaine__heures {
+    display: grid;
+    grid-template-rows: repeat(var(--cal-plages), var(--cal-heure));
+}
+.cal-semaine__heure {
+    font-family: var(--chiffre);
+    font-size: .68rem;
+    color: var(--ardoise-claire);
+    text-align: right;
+    padding-right: var(--e2);
+    transform: translateY(-.4em);
+}
+
+.cal-colonne {
+    position: relative;
+    height: calc(var(--cal-plages) * var(--cal-heure));
+    border-left: 1px solid var(--trait);
+    cursor: crosshair;
+    /* Les lignes horaires sont peintes par un degrade repete :
+       aucun noeud supplementaire a creer pour chaque heure. */
+    background-image: repeating-linear-gradient(
+        to bottom,
+        var(--trait) 0 1px,
+        transparent 1px var(--cal-heure)
+    );
+}
+.cal-colonne--weekend    { background-color: rgba(22, 33, 31, .03); }
+.cal-colonne--passe      { background-color: rgba(22, 33, 31, .02); }
+.cal-colonne--aujourdhui { background-color: rgba(14, 107, 94, .045); }
+
+.cal-bloc {
+    position: absolute;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    overflow: hidden;
+    padding: .18rem .34rem;
+    text-align: left;
+    font-size: .68rem;
+    line-height: 1.28;
+    border-radius: 3px;
+    border-left: 3px solid var(--st-confirmee);
+    background: var(--st-confirmee-fond);
+    color: var(--st-confirmee);
+    /* Un liset clair separe deux blocs mitoyens sans decaler la grille. */
+    box-shadow: 0 0 0 1px var(--creme);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+.cal-bloc:hover {
+    transform: scale(1.015);
+    box-shadow: 0 0 0 1px var(--creme), var(--relief-2);
+    z-index: 3;
+}
+
+.cal-bloc__heure { font-family: var(--chiffre); font-weight: 600; }
+.cal-bloc__titre { font-weight: 600; color: var(--encre); overflow: hidden; text-overflow: ellipsis; }
+.cal-bloc__salle { color: var(--ardoise); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.cal-bloc--en_attente {
+    border-left-color: var(--st-attente);
+    background: var(--st-attente-fond);
+    color: var(--st-attente);
+}
+.cal-bloc--maintenance {
+    border-left-color: var(--ardoise);
+    color: var(--st-annulee);
+    /* Hachures : l'indisponibilite technique ne se confond pas avec
+       une reunion, meme pour un oeil qui ne lit pas la legende. */
+    background: repeating-linear-gradient(
+        135deg,
+        var(--st-annulee-fond) 0 6px,
+        rgba(22, 33, 31, .06) 6px 12px
+    );
+}
+.cal-bloc--mien {
+    border-left-color: var(--terracotta);
+    background: var(--terracotta-voile);
+    color: var(--terracotta-sombre);
+}
+.cal-bloc--mien .cal-bloc__titre { color: var(--terracotta-sombre); }
+
+/* --------------------------------------------------- 6. LEGENDE --- */
+
+.cal__legende {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e4);
+    margin-top: var(--e5);
+    padding-top: var(--e4);
+    border-top: 1px solid var(--trait);
+    font-size: .76rem;
+    color: var(--ardoise);
+}
+
+.cal__cle { display: inline-flex; align-items: center; gap: .4rem; }
+.cal__cle::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border-left: 3px solid var(--st-confirmee);
+    background: var(--st-confirmee-fond);
+}
+.cal__cle--en_attente::before   { border-left-color: var(--st-attente); background: var(--st-attente-fond); }
+.cal__cle--maintenance::before  { border-left-color: var(--ardoise);    background: var(--st-annulee-fond); }
+.cal__cle--mien::before         { border-left-color: var(--terracotta); background: var(--terracotta-voile); }
+.cal__cle--libre::before        { border-left-color: var(--trait-appuye); background: transparent; }
+
+/* ---------------------------------------------------- 7. PANNEAU --- */
+
+.cal__panneau {
+    position: fixed;
+    right: var(--e5);
+    bottom: var(--e5);
+    z-index: 60;
+    width: min(330px, calc(100vw - 2 * var(--e4)));
+    padding: var(--e5);
+    background: var(--blanc);
+    border: 1px solid var(--trait);
+    border-radius: var(--angle-l);
+    box-shadow: 0 18px 46px rgba(22, 33, 31, .18);
+    animation: cal-monte .18s ease-out;
+}
+
+@keyframes cal-monte {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.cal__fermer {
+    position: absolute;
+    top: var(--e3);
+    right: var(--e3);
+    color: var(--ardoise);
+    line-height: 0;
+}
+.cal__fermer:hover { color: var(--encre); }
+.cal__fermer svg { width: 15px; height: 15px; }
+
+.cal__titre {
+    font-size: 1.05rem;
+    margin: var(--e3) 0 var(--e4);
+    line-height: 1.25;
+}
+
+.cal__ligne {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--e3);
+    padding: .32rem 0;
+    font-size: .82rem;
+    border-bottom: 1px dashed var(--trait);
+}
+.cal__ligne:last-of-type { border-bottom: 0; }
+.cal__ligne-cle    { color: var(--ardoise); flex: none; }
+.cal__ligne-valeur { text-align: right; font-weight: 500; }
+
+/* ------------------------------------------------ 8. RESPONSIVE --- */
+
+@media (max-width: 900px) {
+    /* La semaine ne se comprime pas : elle defile lateralement,
+       chaque colonne gardant une largeur lisible. */
+    .cal-semaine { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .cal-semaine__entete,
+    .cal-semaine__corps { min-width: 720px; }
+
+    .cal__intitule { order: -1; flex-basis: 100%; text-align: left; }
+
+    .cal__panneau {
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: auto;
+        border-radius: var(--angle-l) var(--angle-l) 0 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .cal-jour { min-height: 76px; }
+    .cal-jour__liste { display: none; }   /* la jauge suffit sur un telephone */
+    .cal__resume { margin-left: 0; }
+}
+
+@media print {
+    .cal__filtres, .cal__bascule, .cal__navigation, .cal__panneau { display: none; }
+    .cal-colonne { cursor: default; }
+}

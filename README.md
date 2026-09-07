@@ -128,6 +128,29 @@ donnent exactement une reservation.
 | Gestionnaire | yassine.trabelsi@atrium.tn | Atrium2026! |
 | Utilisateur | mehdi.chaabane@atrium.tn | Atrium2026! |
 
+## Le calendrier
+
+Deux vues, ecrites a la main en JavaScript natif :
+
+- **mois** : une case par journee, avec le nombre de reunions et une
+  jauge d'occupation. La jauge compare les journees entre elles ; le
+  taux reel, lui, est annonce dans l'infobulle. Un clic sur une
+  journee ouvre la semaine correspondante.
+- **semaine** : grille horaire calee sur les heures d'ouverture des
+  salles affichees. Chaque creneau est un bloc positionne en
+  pourcentage ; deux reunions simultanees se partagent la largeur de
+  la colonne. Un clic dans le vide propose le creneau libre le plus
+  proche et pre-remplit la demande.
+
+Le service `core/Calendrier.php` produit les donnees ; le FrontOffice
+et le BackOffice consomment le meme JSON, avec deux differences :
+l'agenda public n'affiche que « Occupee » pour les reunions des
+autres, et n'expose pas les salles hors service.
+
+Navigation, filtres et changements de vue passent par
+`calendrier/donnees` : la page n'est jamais rechargee, et l'adresse
+est mise a jour au fil de la navigation pour rester partageable.
+
 ## Etat d'avancement
 
 - [x] Structure MVC, configuration, controleur frontal
@@ -138,7 +161,8 @@ donnent exactement une reservation.
 - [x] CRUD Batiments et Etages
 - [x] CRUD Salles, equipements, maintenance
 - [x] Moteur de reservation et de detection de conflits
-- [ ] Calendrier interactif
+- [x] Espace utilisateur du FrontOffice
+- [x] Calendrier interactif
 - [ ] Validation des demandes et deplacement de reunions
 - [ ] Statistiques et rapports
 - [ ] Notifications par courriel

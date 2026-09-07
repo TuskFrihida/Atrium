@@ -326,7 +326,7 @@ class Reservation extends Modele
         }
 
         return $this->lignes(
-            "SELECT r.id, r.salle_id, r.titre, r.date_reservation, r.heure_debut, r.heure_fin,
+            "SELECT r.id, r.salle_id, r.utilisateur_id, r.titre, r.date_reservation, r.heure_debut, r.heure_fin,
                     r.statut, r.nb_participants,
                     s.nom AS salle_nom, s.code AS salle_code,
                     b.nom AS batiment_nom,

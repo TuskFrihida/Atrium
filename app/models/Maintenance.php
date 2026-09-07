@@ -234,4 +234,45 @@ class Maintenance extends Modele
             'terminee' => 'Terminée',
         ][$avancement] ?? $avancement;
     }
+
+    /**
+     * Maintenances qui empietent sur une periode de calendrier.
+     *
+     * Une maintenance est stockee en DATETIME : elle peut couvrir
+     * plusieurs journees. Le test de chevauchement est donc le meme
+     * que celui des reservations — debut < fin_periode ET fin > debut_periode —
+     * avec des bornes elargies aux extremites des journees affichees.
+     *
+     * @param array<int, int> $salleIds Restriction facultative aux salles visibles
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function surPeriode(string $du, string $au, array $salleIds = []): array
+    {
+        $params = [':debut' => $du . ' 00:00:00', ':fin' => $au . ' 23:59:59'];
+        $filtre = '';
+
+        if ($salleIds !== []) {
+            $marqueurs = [];
+
+            foreach (array_values(array_map('intval', $salleIds)) as $index => $salleId) {
+                $marqueur          = ':m' . $index;
+                $marqueurs[]       = $marqueur;
+                $params[$marqueur] = $salleId;
+            }
+
+            $filtre = ' AND m.salle_id IN (' . implode(', ', $marqueurs) . ')';
+        }
+
+        return $this->lignes(
+            'SELECT m.id, m.salle_id, m.type, m.motif, m.date_debut, m.date_fin,
+                    s.nom AS salle_nom, s.code AS salle_code
+               FROM maintenance m
+         INNER JOIN salle s ON s.id = m.salle_id
+              WHERE m.date_debut < :fin
+                AND m.date_fin   > :debut' . $filtre . '
+           ORDER BY m.date_debut',
+            $params
+        );
+    }
 }
