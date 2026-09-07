@@ -147,11 +147,7 @@ class AdminReservationControleur extends AdminControleur
 
         (new Reservation())->changerStatut($id, 'confirmee', Auth::id(), null);
 
-        $this->avertir($reservation, 'succes', 'Réservation confirmée',
-            'Votre réunion « ' . $reservation['titre'] .' » du '
-            . dateFr($reservation['date_reservation']) . ' de '
-            . heureFr($reservation['heure_debut']) . ' à ' . heureFr($reservation['heure_fin'])
-            . ' est confirmée en salle ' . $reservation['salle_nom'] . '.');
+        Avis::decision($reservation, 'confirmee');
 
         Flash::succes('La réservation « ' . $reservation['titre'] . ' » est confirmée.');
         $this->retour('admin/reservation');
@@ -175,9 +171,7 @@ class AdminReservationControleur extends AdminControleur
 
         (new Reservation())->changerStatut($id, 'refusee', Auth::id(), $motif);
 
-        $this->avertir($reservation, 'erreur', 'Demande refusée',
-            'Votre demande « ' . $reservation['titre'] . ' » du '
-            . dateFr($reservation['date_reservation']) . ' a été refusée. Motif : ' . $motif);
+        Avis::decision($reservation, 'refusee', $motif);
 
         Flash::succes('La demande a été refusée et le demandeur en a été informé.');
         $this->retour('admin/reservation');
@@ -205,10 +199,7 @@ class AdminReservationControleur extends AdminControleur
 
         (new Reservation())->changerStatut($id, 'annulee', Auth::id(), $motif);
 
-        $this->avertir($reservation, 'alerte', 'Réservation annulée',
-            'Votre réunion « ' . $reservation['titre'] . ' » du '
-            . dateFr($reservation['date_reservation']) . ' a été annulée par un gestionnaire. '
-            . 'Motif : ' . $motif);
+        Avis::decision($reservation, 'annulee', $motif);
 
         Flash::succes('La réservation a été annulée et le créneau libéré.');
         $this->retour('admin/reservation');
@@ -254,8 +245,7 @@ class AdminReservationControleur extends AdminControleur
             if ($action === 'refuser') {
                 $modele->changerStatut($identifiant, 'refusee', Auth::id(), $motif);
 
-                $this->avertir($reservation, 'erreur', 'Demande refusée',
-                    'Votre demande « ' . $reservation['titre'] . ' » a été refusée. Motif : ' . $motif);
+                Avis::decision($reservation, 'refusee', (string) $motif);
 
                 $traites++;
                 continue;
@@ -270,9 +260,7 @@ class AdminReservationControleur extends AdminControleur
 
             $modele->changerStatut($identifiant, 'confirmee', Auth::id(), null);
 
-            $this->avertir($reservation, 'succes', 'Réservation confirmée',
-                'Votre réunion « ' . $reservation['titre'] . ' » du '
-                . dateFr($reservation['date_reservation']) . ' est confirmée.');
+            Avis::decision($reservation, 'confirmee');
 
             $traites++;
         }
@@ -361,15 +349,7 @@ class AdminReservationControleur extends AdminControleur
             $this->refuser('admin/reservation/nouvelle', $resultat['erreurs'], $validateur->valeurs());
         }
 
-        (new Notification())->deposer(
-            (int) $donnees['utilisateur_id'],
-            'succes',
-            'Une salle a été réservée pour vous',
-            'Un gestionnaire a réservé « ' . $donnees['titre'] . ' » le '
-            . $donnees['date_reservation'] . ' de ' . $donnees['heure_debut']
-            . ' à ' . $donnees['heure_fin'] . '.',
-            'reservation/detail/' . $resultat['id']
-        );
+        Avis::reservationManuelle((new Reservation())->fiche((int) $resultat['id']));
 
         Flash::succes('La réservation a été créée et confirmée.');
         $this->rediriger('admin/reservation/detail/' . $resultat['id']);
@@ -437,13 +417,9 @@ class AdminReservationControleur extends AdminControleur
             $this->refuser('admin/reservation/deplacer/' . $id, $resultat['erreurs'], $validateur->valeurs());
         }
 
-        $nouvelle = (new Reservation())->fiche($id);
-
-        $this->avertir($reservation, 'alerte', 'Votre réunion a été déplacée',
-            '« ' . $reservation['titre'] . ' » se tiendra finalement le '
-            . dateFr($nouvelle['date_reservation']) . ' de ' . heureFr($nouvelle['heure_debut'])
-            . ' à ' . heureFr($nouvelle['heure_fin']) . ' en salle ' . $nouvelle['salle_nom']
-            . ' (' . $nouvelle['batiment_nom'] . ').');
+        // L'ancienne fiche a ete lue avant l'ecriture : le courriel
+        // peut donc montrer l'avant ET l'apres.
+        Avis::deplacement((new Reservation())->fiche($id), $reservation);
 
         Flash::succes('La réunion a été déplacée et le demandeur prévenu.');
         $this->rediriger('admin/reservation/detail/' . $id);
@@ -569,25 +545,6 @@ class AdminReservationControleur extends AdminControleur
             'heure_fin'        => substr((string) $reservation['heure_fin'], 0, 5),
             'nb_participants'  => (int) $reservation['nb_participants'],
         ];
-    }
-
-    /**
-     * Depose l'avis dans la cloche du demandeur.
-     *
-     * Point d'entree unique de toutes les decisions : c'est ici que
-     * l'envoi du courriel viendra se greffer, sans toucher au reste.
-     *
-     * @param array<string, mixed> $reservation
-     */
-    private function avertir(array $reservation, string $type, string $titre, string $message): void
-    {
-        (new Notification())->deposer(
-            (int) $reservation['demandeur_id'],
-            $type,
-            $titre,
-            $message,
-            'reservation/detail/' . (int) $reservation['id']
-        );
     }
 
     /**

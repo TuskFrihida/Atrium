@@ -86,4 +86,22 @@ class Notification extends Modele
             [':utilisateur' => $utilisateurId]
         )->rowCount();
     }
+
+    /**
+     * Une notification identique a-t-elle deja ete deposee ?
+     *
+     * Sert de registre aux rappels : la cloche garde la trace de ce qui
+     * a ete envoye, ce qui evite d'ajouter une colonne a la table des
+     * reservations pour un simple drapeau. Le script de rappel peut
+     * ainsi tourner toutes les heures sans jamais prevenir deux fois
+     * la meme personne pour la meme reunion.
+     */
+    public function dejaDeposee(int $utilisateurId, string $titre, string $lien): bool
+    {
+        return (int) $this->valeur(
+            'SELECT COUNT(*) FROM notification
+              WHERE utilisateur_id = :utilisateur AND titre = :titre AND lien = :lien',
+            [':utilisateur' => $utilisateurId, ':titre' => $titre, ':lien' => $lien]
+        ) > 0;
+    }
 }

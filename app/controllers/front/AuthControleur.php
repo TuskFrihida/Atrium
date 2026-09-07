@@ -132,6 +132,11 @@ class AuthControleur extends Controleur
 
         if ($compte !== null) {
             Auth::ouvrirSession($modele->sansSecrets($compte));
+
+            // Cloche et courriel d'accueil. Un envoi qui echoue est
+            // journalise, jamais remonte : personne ne doit voir son
+            // inscription refusee parce que le SMTP a hoquete.
+            Avis::bienvenue($compte);
         }
 
         Flash::succes('Votre compte est créé. Bienvenue sur ' . APP_NOM . '.');

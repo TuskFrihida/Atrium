@@ -338,3 +338,56 @@ if (!function_exists('versDateSql')) {
         return $date;
     }
 }
+
+if (!function_exists('styleMail')) {
+    /**
+     * Styles en ligne des gabarits de courriel.
+     *
+     * POURQUOI DES COULEURS EN DUR ICI, ALORS QUE TOUT LE SITE UTILISE
+     * DES VARIABLES CSS : une messagerie n'est pas un navigateur. La
+     * plupart suppriment les feuilles de style et la balise <style>,
+     * et aucune ne comprend var(--teal). Le seul style qui survit est
+     * l'attribut style="" de chaque balise. Les valeurs sont donc
+     * recopiees de base.css, et rassemblees ici pour n'exister qu'a un
+     * seul endroit.
+     */
+    function styleMail(string $cle): string
+    {
+        static $styles = [
+            'corps'   => 'margin:0;padding:0;background:#FAF6F0;'
+                       . 'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;',
+            'carte'   => 'background:#FFFDFB;border:1px solid rgba(22,33,31,.13);border-radius:8px;',
+            'titre'   => 'margin:0 0 16px;font-size:20px;line-height:1.3;color:#16211F;font-weight:600;',
+            'texte'   => 'margin:0 0 14px;font-size:15px;line-height:1.6;color:#22302D;',
+            'discret' => 'margin:0;font-size:13px;line-height:1.6;color:#5A6B67;',
+            'bouton'  => 'display:inline-block;padding:12px 22px;background:#0E6B5E;color:#FAF6F0;'
+                       . 'text-decoration:none;border-radius:4px;font-size:15px;font-weight:600;',
+            'encadre' => 'background:#FAF6F0;border:1px solid rgba(22,33,31,.13);'
+                       . 'border-radius:4px;padding:16px 18px;',
+            'cle'     => 'padding:5px 0;font-size:13px;color:#5A6B67;white-space:nowrap;',
+            'valeur'  => 'padding:5px 0;font-size:14px;color:#16211F;font-weight:600;text-align:right;',
+            'succes'  => 'background:#E2EFEC;border-left:4px solid #0E6B5E;padding:14px 16px;'
+                       . 'border-radius:4px;font-size:14px;line-height:1.6;color:#0A5048;',
+            'alerte'  => 'background:#FAF0DC;border-left:4px solid #D6A756;padding:14px 16px;'
+                       . 'border-radius:4px;font-size:14px;line-height:1.6;color:#8A6314;',
+            'refus'   => 'background:#FBEAE3;border-left:4px solid #E2673F;padding:14px 16px;'
+                       . 'border-radius:4px;font-size:14px;line-height:1.6;color:#C24F2B;',
+        ];
+
+        return $styles[$cle] ?? '';
+    }
+}
+
+if (!function_exists('urlAbsolue')) {
+    /**
+     * Adresse complete d'une page, protocole et hote compris.
+     *
+     * url() suffit dans le site : le navigateur complete le reste.
+     * Un courriel, lui, est lu ailleurs — dans Gmail, dans Outlook,
+     * sur un telephone : un chemin relatif n'y mene nulle part.
+     */
+    function urlAbsolue(string $chemin = ''): string
+    {
+        return rtrim(APP_URL, '/') . '/' . ltrim($chemin, '/');
+    }
+}

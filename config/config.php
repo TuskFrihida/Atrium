@@ -41,7 +41,18 @@ define('CHEMIN_STOCKAGE',  RACINE . DIRECTORY_SEPARATOR . 'storage');
  |  Calculee dynamiquement : le projet fonctionne quel que soit le nom
  |  du dossier dans htdocs, sans jamais modifier cette ligne.
  */
-$__dossier = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
+/*
+ |  En ligne de commande — le script de rappel, par exemple — il n'y a
+ |  pas de requete : SCRIPT_NAME vaudrait « bin/rappels.php » et le
+ |  chemin de base deviendrait « /bin/ ». On repart alors du nom reel
+ |  du dossier du projet, ce qui est exact tant qu'il est servi a la
+ |  racine du serveur, et surchargeable par APP_URL dans mail.local.php
+ |  des que le site vit sur un vrai domaine.
+ */
+$__dossier = PHP_SAPI === 'cli'
+    ? '/' . basename(RACINE)
+    : dirname($_SERVER['SCRIPT_NAME'] ?? '/');
+
 $__dossier = str_replace(DIRECTORY_SEPARATOR, '/', $__dossier);
 $__dossier = ($__dossier === '/' || $__dossier === '.' || $__dossier === '') ? '' : rtrim($__dossier, '/');
 
@@ -85,18 +96,52 @@ define('HASH_ALGO',          PASSWORD_BCRYPT);
 define('HASH_OPTIONS',       ['cost' => 12]);
 
 /* ------------------------------------------------------------------ Mail --- */
-/*  Les identifiants SMTP reels sont surcharges par config/mail.local.php
- *  (fichier ignore par Git). Voir README.
+/*
+ |  Les identifiants SMTP reels vivent dans config/mail.local.php, un
+ |  fichier ignore par Git. Il est charge EN PREMIER : les define() qui
+ |  suivent ne servent que de valeurs de repli, puisqu'en PHP la
+ |  premiere definition d'une constante l'emporte.
+ |
+ |  Consequence : un mot de passe d'application n'atterrit jamais dans
+ |  l'historique du depot, et le projet fonctionne quand meme sans ce
+ |  fichier — les courriels sont alors simplement archives sur disque.
+ |
+ |  Voir config/mail.local.exemple.php et le README.
  */
-define('MAIL_ACTIF',            false);
-define('MAIL_HOTE',             'smtp.gmail.com');
-define('MAIL_PORT',             587);
-define('MAIL_SECURITE',         'tls');
-define('MAIL_UTILISATEUR',      '');
-define('MAIL_MOTDEPASSE',       '');
-define('MAIL_EXPEDITEUR',       'no-reply@atrium.local');
-define('MAIL_EXPEDITEUR_NOM',   APP_NOM);
-define('MAIL_COPIE_FICHIER',    true);    // archive HTML dans storage/mails/
+$__mailLocal = __DIR__ . DIRECTORY_SEPARATOR . 'mail.local.php';
+
+if (is_file($__mailLocal)) {
+    require_once $__mailLocal;
+}
+
+unset($__mailLocal);
+
+defined('MAIL_ACTIF')          || define('MAIL_ACTIF',          false);
+defined('MAIL_HOTE')           || define('MAIL_HOTE',           'smtp.gmail.com');
+defined('MAIL_PORT')           || define('MAIL_PORT',           587);
+defined('MAIL_SECURITE')       || define('MAIL_SECURITE',       'tls');
+defined('MAIL_UTILISATEUR')    || define('MAIL_UTILISATEUR',    '');
+defined('MAIL_MOTDEPASSE')     || define('MAIL_MOTDEPASSE',     '');
+defined('MAIL_EXPEDITEUR')     || define('MAIL_EXPEDITEUR',     'no-reply@atrium.local');
+defined('MAIL_EXPEDITEUR_NOM') || define('MAIL_EXPEDITEUR_NOM', APP_NOM);
+defined('MAIL_COPIE_FICHIER')  || define('MAIL_COPIE_FICHIER',  true);
+defined('MAIL_DELAI_RAPPEL')   || define('MAIL_DELAI_RAPPEL',   24);   // heures avant la reunion
+
+/*
+ |  Adresse publique complete de l'application. Les liens d'un courriel
+ |  sont lus hors du site : « /reservation » n'y mene nulle part, il
+ |  faut une adresse absolue. Elle est deduite de la requete en cours,
+ |  et surchargeable dans mail.local.php une fois le site en ligne —
+ |  une tache planifiee, elle, n'a aucune requete pour la deviner.
+ */
+if (!defined('APP_URL')) {
+    $__protocole = (($_SERVER['HTTPS'] ?? '') !== '' && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $__hote      = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+    define('APP_URL', $__protocole . '://' . $__hote . '/' . ltrim(BASE_URL, '/'));
+
+    unset($__protocole, $__hote);
+}
 
 /* ------------------------------------------------------------ Initialisation --- */
 date_default_timezone_set(APP_FUSEAU);

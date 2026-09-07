@@ -211,6 +211,53 @@ francais l'ouvre sans rien reparer. L'ecran et le fichier passent par
 la meme methode de lecture : ce qui est exporte est exactement ce qui
 a ete affiche.
 
+## Notifications
+
+Prevenir quelqu'un, c'est deux gestes : deposer une notification dans
+sa cloche, et lui expedier un courriel. Les faire cote a cote dans
+chaque controleur, c'est la garantie qu'un jour l'un des deux sera
+oublie. `core/Avis.php` est donc le point de passage unique : un
+controleur annonce un evenement metier, la classe decide comment il se
+traduit.
+
+La cloche d'abord, le courriel ensuite — jamais l'inverse. L'ecriture
+en base est fiable et immediate, l'envoi SMTP est lent et faillible.
+Si la messagerie tombe, l'information reste visible dans
+l'application, et **aucune exception ne remonte au controleur** : une
+reservation ne doit jamais echouer parce qu'un serveur de courriel a
+hoquete.
+
+Sept gabarits dans `app/views/mails/` : bienvenue, accuse de reception,
+confirmation, refus, annulation, deplacement, rappel. Balisage en
+tableaux et styles en ligne — le seul que Gmail, Outlook et les clients
+mobiles rendent de la meme facon. Une variante en texte brut est
+derivee automatiquement.
+
+### Activer l'envoi reel
+
+Sans configuration, l'application fonctionne : les courriels sont
+ecrits dans `storage/mails/` et journalises dans
+`storage/logs/mail.log`. On peut donc tout relire sans reseau.
+
+Pour expedier vraiment :
+
+    copy config\mail.local.exemple.php config\mail.local.php
+
+puis renseigner l'adresse et un **mot de passe d'application** Google
+(Compte Google > Securite > Validation en deux etapes > Mots de passe
+des applications). Le fichier `config/mail.local.php` est exclu de Git :
+aucun identifiant ne part dans l'historique du depot.
+
+### Rappels automatiques
+
+    php binappels.php
+
+Previent les auteurs des reunions confirmees qui commencent dans les
+prochaines heures. Le script est idempotent — il peut tourner toutes
+les heures sans prevenir deux fois — et refuse de s'executer depuis un
+navigateur. Sous Windows, le Planificateur de taches suffit a
+l'automatiser.
+
 ## Etat d'avancement
 
 - [x] Structure MVC, configuration, controleur frontal
@@ -225,4 +272,4 @@ a ete affiche.
 - [x] Calendrier interactif
 - [x] Validation des demandes et deplacement de reunions
 - [x] Statistiques et rapports
-- [ ] Notifications par courriel
+- [x] Notifications par courriel

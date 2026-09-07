@@ -125,14 +125,8 @@ class ReservationControleur extends Controleur
             $this->refuser('reservation/nouvelle', $resultat['erreurs'], $validateur->valeurs());
         }
 
-        (new Notification())->deposer(
-            (int) Auth::id(),
-            'info',
-            'Demande enregistrée',
-            'Votre demande « ' . $donnees['titre'] . ' » du '
-            . $donnees['date_reservation'] . ' est en attente de validation.',
-            'reservation/detail/' . $resultat['id']
-        );
+        // Accuse de reception : cloche et courriel, en un seul appel.
+        Avis::demandeDeposee((new Reservation())->fiche((int) $resultat['id']));
 
         Flash::succes('Votre demande a été enregistrée. Un gestionnaire va l\'examiner.');
         $this->rediriger('reservation/detail/' . $resultat['id']);
