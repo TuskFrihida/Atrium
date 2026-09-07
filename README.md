@@ -181,6 +181,36 @@ Les reservations manuelles sont creees directement confirmees, au nom
 d'un utilisateur relu en base — un identifiant bricole dans le
 navigateur ne cree rien.
 
+## Statistiques et rapports
+
+Deux ecrans, reserves a l'administrateur des batiments.
+
+`admin/statistique` mesure l'usage du parc sur une periode : taux
+d'occupation, evolution des heures reservees, charge par jour et par
+heure de debut, occupation par batiment, palmares des salles les plus
+et les moins demandees, consommation par service.
+
+Le taux d'occupation rapporte les heures effectivement reservees au
+potentiel reel : amplitude d'ouverture de chaque salle disponible,
+multipliee par le nombre de JOURS OUVRES de la periode. Compter les
+week-ends ou les nuits ferait chuter tous les taux d'un tiers sans
+rien apprendre a personne. Seules les reservations « confirmee » et
+« terminee » sont retenues : une demande refusee n'a jamais immobilise
+la moindre salle.
+
+Les graphiques — courbe, histogrammes, anneau — sont des SVG produits
+par PHP, sans la moindre bibliotheque. Ils s'affichent sans
+JavaScript, s'impriment proprement, restent nets a toutes les tailles,
+et leurs couleurs sont declarees en var(--...) : la charte reste dans
+base.css.
+
+`admin/rapport` liste les reservations d'une periode selon cinq
+criteres et exporte le meme jeu de lignes en CSV — point-virgule,
+marque d'ordre des octets et virgule decimale, pour qu'un tableur
+francais l'ouvre sans rien reparer. L'ecran et le fichier passent par
+la meme methode de lecture : ce qui est exporte est exactement ce qui
+a ete affiche.
+
 ## Etat d'avancement
 
 - [x] Structure MVC, configuration, controleur frontal
@@ -194,5 +224,5 @@ navigateur ne cree rien.
 - [x] Espace utilisateur du FrontOffice
 - [x] Calendrier interactif
 - [x] Validation des demandes et deplacement de reunions
-- [ ] Statistiques et rapports
+- [x] Statistiques et rapports
 - [ ] Notifications par courriel

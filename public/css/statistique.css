@@ -1,0 +1,151 @@
+/* =====================================================================
+   ATRIUM — Statistiques et rapports
+   ---------------------------------------------------------------------
+   Les graphiques sont des SVG produits par le serveur : leurs couleurs
+   sont declarees en var(--...) dans le balisage, et leur typographie
+   est reglee ici. Aucune valeur de couleur n'est ecrite dans cette
+   feuille, elles viennent toutes de base.css.
+   ===================================================================== */
+
+/* -------------------------------------------------- 1. GRAPHIQUES --- */
+
+.gr {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.gr--anneau { max-width: 190px; margin: 0 auto; }
+
+.gr__grille {
+    stroke: var(--trait);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+}
+
+.gr__axe {
+    font-family: var(--chiffre);
+    font-size: 10px;
+    fill: var(--ardoise-claire);
+}
+
+.gr__valeur {
+    font-family: var(--chiffre);
+    font-size: 10px;
+    font-weight: 600;
+    fill: var(--ardoise);
+}
+
+.gr__centre {
+    font-family: var(--titre);
+    font-size: 26px;
+    font-weight: 600;
+    fill: var(--encre);
+}
+
+.gr__vide {
+    display: grid;
+    place-items: center;
+    min-height: 150px;
+    margin: 0;
+    color: var(--ardoise-claire);
+    font-size: .85rem;
+    text-align: center;
+}
+
+/* Les barres reagissent au survol : l'infobulle native du SVG
+   (<title>) donne alors la valeur exacte. */
+.gr rect { transition: opacity var(--transition); }
+.gr rect:hover { opacity: 1 !important; }
+
+/* --------------------------------------------- 2. ANNEAU + LEGENDE --- */
+
+.anneau-bloc {
+    display: grid;
+    gap: var(--e5);
+    grid-template-columns: 1fr;
+    align-items: center;
+}
+
+.legende { list-style: none; display: grid; gap: var(--e2); font-size: .85rem; }
+
+.legende li {
+    display: grid;
+    grid-template-columns: 10px 1fr auto;
+    align-items: center;
+    gap: var(--e3);
+    padding-bottom: var(--e2);
+    border-bottom: 1px dashed var(--trait);
+}
+.legende li:last-child { border-bottom: 0; }
+
+.legende__puce { width: 10px; height: 10px; border-radius: 2px; }
+.legende__nom { color: var(--ardoise); }
+.legende__valeur { font-weight: 600; }
+
+@media (min-width: 620px) {
+    .anneau-bloc { grid-template-columns: 190px 1fr; }
+}
+
+/* ------------------------------------------------- 3. CLASSEMENTS --- */
+
+.classement {
+    list-style: none;
+    display: grid;
+    gap: var(--e4);
+    font-size: .9rem;
+}
+
+.classement--numerote { counter-reset: rang; }
+
+.classement__rang {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    margin-right: var(--e2);
+    border-radius: 50%;
+    background: var(--creme-appuye);
+    color: var(--ardoise);
+    font-family: var(--chiffre);
+    font-size: .68rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* Les trois premieres places se distinguent sans passer par la couleur
+   seule : le fond change, et le rang reste ecrit en toutes lettres. */
+.classement--numerote li:nth-child(1) .classement__rang {
+    background: var(--teal); color: var(--creme);
+}
+.classement--numerote li:nth-child(2) .classement__rang {
+    background: var(--ocre); color: var(--encre);
+}
+.classement--numerote li:nth-child(3) .classement__rang {
+    background: var(--terracotta); color: var(--creme);
+}
+
+/* --------------------------------------------------- 4. PERIODE --- */
+
+.periode__raccourcis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e2);
+    margin-bottom: var(--e3);
+}
+
+/* ------------------------------------------- 5. TABLEAU COMPACT --- */
+
+/* Un rapport peut compter des centaines de lignes : on resserre. */
+.tableau--dense { font-size: .82rem; }
+.tableau--dense td { padding-block: .42rem; }
+.tableau--dense .secondaire { font-size: .72rem; }
+
+/* ---------------------------------------------- 6. IMPRESSION --- */
+
+@media print {
+    .filtres, .periode__raccourcis, .titre-page .bouton { display: none; }
+    .carte { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
+    .gr { max-width: 100%; }
+}
