@@ -316,3 +316,25 @@ if (!function_exists('versDecimal')) {
         return $texte === '' || !is_numeric($texte) ? null : (float) $texte;
     }
 }
+
+if (!function_exists('versDateSql')) {
+    /**
+     * Convertit une date saisie en jj/mm/aaaa vers le format aaaa-mm-jj
+     * attendu par MySQL, en laissant passer ce dernier tel quel.
+     *
+     * L'interface est francaise, la base est anglo-saxonne : cette
+     * conversion est le seul point ou les deux se rencontrent. Toute
+     * chaine qui ne ressemble ni a l'un ni a l'autre est renvoyee
+     * inchangee, et sera rejetee plus loin par le Validateur.
+     */
+    function versDateSql(?string $date): string
+    {
+        $date = trim((string) $date);
+
+        if (preg_match('#^([0-9]{2})/([0-9]{2})/([0-9]{4})$#', $date, $trouve) === 1) {
+            return $trouve[3] . '-' . $trouve[2] . '-' . $trouve[1];
+        }
+
+        return $date;
+    }
+}

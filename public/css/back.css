@@ -282,3 +282,37 @@ body.est-admin { background: var(--creme-appuye); }
     .tuiles { grid-template-columns: repeat(4, 1fr); }
     .colonnes { grid-template-columns: 1.7fr 1fr; }
 }
+
+/* -------------------------------------------- 12. TRAITEMENT GROUPE --- */
+
+/* Barre d'actions groupees : elle vient se coller au-dessus du tableau,
+   d'ou l'absence de rayon en bas et le fond appuye. */
+.lot {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--e4);
+    flex-wrap: wrap;
+    padding: var(--e4);
+    background: var(--encre);
+    color: var(--creme);
+    border-radius: var(--angle-l) var(--angle-l) 0 0;
+}
+
+.lot__compte { font-size: .85rem; align-self: center; }
+.lot__compte strong { font-family: var(--chiffre); font-size: 1.05rem; }
+
+.lot__motif { flex: 1 1 260px; margin: 0; }
+.lot__motif .champ__etiquette { color: var(--nuit-texte-doux); }
+.lot__motif .champ__saisie {
+    background: var(--nuit-relief);
+    border-color: var(--nuit-trait);
+    color: var(--nuit-texte);
+}
+.lot__motif .champ__saisie::placeholder { color: var(--nuit-texte-doux); }
+.lot__motif .champ__erreur { color: var(--ocre); }
+
+/* Le tableau qui suit la barre perd son arrondi superieur. */
+.lot:not([hidden]) + .carte { border-radius: 0 0 var(--angle-l) var(--angle-l); }
+
+.tableau .colonne-case { width: 1%; padding-right: 0; }
+.tableau .colonne-case input { accent-color: var(--teal); width: 16px; height: 16px; }

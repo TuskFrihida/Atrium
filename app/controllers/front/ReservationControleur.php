@@ -45,8 +45,8 @@ class ReservationControleur extends Controleur
             'utilisateur_id' => Auth::id(),
             'recherche'      => Requete::get('recherche'),
             'statut'         => Requete::get('statut'),
-            'du'             => $this->versDateSql((string) Requete::get('du')),
-            'au'             => $this->versDateSql((string) Requete::get('au')),
+            'du'             => versDateSql((string) Requete::get('du')),
+            'au'             => versDateSql((string) Requete::get('au')),
         ];
 
         $this->rendre('front/reservation/liste', [
@@ -115,7 +115,7 @@ class ReservationControleur extends Controleur
             'utilisateur_id'   => Auth::id(),
             'titre'            => $donnees['titre'],
             'description'      => $donnees['description'],
-            'date_reservation' => $this->versDateSql((string) $donnees['date_reservation']),
+            'date_reservation' => versDateSql((string) $donnees['date_reservation']),
             'heure_debut'      => $donnees['heure_debut'],
             'heure_fin'        => $donnees['heure_fin'],
             'nb_participants'  => (int) $donnees['nb_participants'],
@@ -188,7 +188,7 @@ class ReservationControleur extends Controleur
 
         $controle = $moteur->verifier([
             'salle_id'         => (int) $donnees['salle_id'],
-            'date_reservation' => $this->versDateSql((string) $donnees['date_reservation']),
+            'date_reservation' => versDateSql((string) $donnees['date_reservation']),
             'heure_debut'      => $donnees['heure_debut'],
             'heure_fin'        => $donnees['heure_fin'],
             'nb_participants'  => (int) $donnees['nb_participants'],
@@ -204,7 +204,7 @@ class ReservationControleur extends Controleur
             'salle_id'         => (int) $donnees['salle_id'],
             'titre'            => $donnees['titre'],
             'description'      => $donnees['description'],
-            'date_reservation' => $this->versDateSql((string) $donnees['date_reservation']),
+            'date_reservation' => versDateSql((string) $donnees['date_reservation']),
             'heure_debut'      => $donnees['heure_debut'] . ':00',
             'heure_fin'        => $donnees['heure_fin'] . ':00',
             'nb_participants'  => (int) $donnees['nb_participants'],
@@ -265,7 +265,7 @@ class ReservationControleur extends Controleur
 
         $controle = $moteur->verifier([
             'salle_id'         => Requete::entier('salle', 0, 'GET'),
-            'date_reservation' => $this->versDateSql((string) Requete::get('date')),
+            'date_reservation' => versDateSql((string) Requete::get('date')),
             'heure_debut'      => (string) Requete::get('debut'),
             'heure_fin'        => (string) Requete::get('fin'),
             'nb_participants'  => Requete::entier('participants', 1, 'GET'),
@@ -295,7 +295,7 @@ class ReservationControleur extends Controleur
     public function creneaux(): never
     {
         $moteur = new MoteurReservation();
-        $date   = $this->versDateSql((string) Requete::get('date'));
+        $date   = versDateSql((string) Requete::get('date'));
 
         $this->json([
             'creneaux' => $moteur->creneauxLibres(Requete::entier('salle', 0, 'GET'), (string) $date),
@@ -333,17 +333,5 @@ class ReservationControleur extends Controleur
         }
 
         return $validateur;
-    }
-
-    /** Convertit jj/mm/aaaa en aaaa-mm-jj, en laissant passer ce dernier. */
-    private function versDateSql(string $date): string
-    {
-        $date = trim($date);
-
-        if (preg_match('#^(\d{2})/(\d{2})/(\d{4})$#', $date, $trouve) === 1) {
-            return $trouve[3] . '-' . $trouve[2] . '-' . $trouve[1];
-        }
-
-        return $date;
     }
 }

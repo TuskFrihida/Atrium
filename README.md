@@ -151,6 +151,36 @@ Navigation, filtres et changements de vue passent par
 `calendrier/donnees` : la page n'est jamais rechargee, et l'adresse
 est mise a jour au fil de la navigation pour rester partageable.
 
+## Le poste de travail du gestionnaire
+
+`admin/reservation` ouvre par defaut sur les demandes en attente : ce
+qui reste a arbitrer, et rien d'autre. Huit criteres de recherche se
+combinent librement (texte, statut, batiment, salle, demandeur,
+origine, periode), et six colonnes sont triables.
+
+Trois decisions, tracees et motivees :
+
+| Action | Statut obtenu | Motif | Notification |
+|---|---|---|---|
+| Valider   | confirmee | non   | oui |
+| Refuser   | refusee   | exige | oui |
+| Annuler   | annulee   | exige | oui |
+| Deplacer  | inchange  | non   | oui |
+
+Une validation n'est jamais une simple ecriture de statut : le moteur
+rejoue les sept controles avant d'enregistrer. Une salle passee en
+maintenance depuis le depot de la demande suffit a bloquer la
+validation, et l'ecran bascule alors vers le deplacement en proposant
+les salles libres sur le meme creneau.
+
+Le traitement groupe accepte plusieurs demandes d'un coup. Chacune
+garde son verdict propre : celles qui ne passent plus sont laissees de
+cote et nommement signalees, sans empecher les autres d'aboutir.
+
+Les reservations manuelles sont creees directement confirmees, au nom
+d'un utilisateur relu en base — un identifiant bricole dans le
+navigateur ne cree rien.
+
 ## Etat d'avancement
 
 - [x] Structure MVC, configuration, controleur frontal
@@ -163,6 +193,6 @@ est mise a jour au fil de la navigation pour rester partageable.
 - [x] Moteur de reservation et de detection de conflits
 - [x] Espace utilisateur du FrontOffice
 - [x] Calendrier interactif
-- [ ] Validation des demandes et deplacement de reunions
+- [x] Validation des demandes et deplacement de reunions
 - [ ] Statistiques et rapports
 - [ ] Notifications par courriel

@@ -145,4 +145,33 @@ class Utilisateur extends Modele
             ? $role
             : ROLE_UTILISATEUR;
     }
+
+    /**
+     * Comptes actifs pour une liste deroulante :
+     * identifiant => « Prenom Nom — service ».
+     *
+     * Les comptes suspendus sont exclus : reserver une salle au nom
+     * d'une personne qui ne peut plus se connecter n'aurait pas de
+     * sens, et elle ne verrait jamais la notification.
+     *
+     * @return array<int, string>
+     */
+    public function pourListe(): array
+    {
+        $lignes = $this->lignes(
+            "SELECT `id`, `nom`, `prenom`, `service`, `role`
+               FROM `utilisateur`
+              WHERE `statut` = 'actif'
+           ORDER BY `nom`, `prenom`"
+        );
+
+        $choix = [];
+
+        foreach ($lignes as $ligne) {
+            $choix[(int) $ligne['id']] = $ligne['prenom'] . ' ' . $ligne['nom']
+                . ($ligne['service'] !== null && $ligne['service'] !== '' ? ' — ' . $ligne['service'] : '');
+        }
+
+        return $choix;
+    }
 }
