@@ -44,6 +44,7 @@ final class Routeur
         'mot-de-passe-oublie' => 'auth/mot-de-passe-oublie',
         'profil'              => 'compte/profil',
         'notification'        => 'compte/notifications',
+        'notifications'       => 'compte/notifications',
     ];
 
     public function __construct(private readonly string $adresse)

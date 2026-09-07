@@ -9,7 +9,10 @@
 
 $rubrique  = $rubrique ?? '';
 $connecte  = Session::obtenir('utilisateur');
-$nonLues   = (int) Session::obtenir('notifications_non_lues', 0);
+
+// Compteur de la cloche, relu a chaque page : une notification deposee
+// pendant la navigation doit apparaitre sans attendre une reconnexion.
+$nonLues = $connecte === null ? 0 : (new Notification())->nonLues((int) $connecte['id']);
 
 $liens = [
     ['cle' => 'accueil',    'url' => '',           'libelle' => 'Accueil'],
