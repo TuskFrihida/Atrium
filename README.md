@@ -94,6 +94,32 @@ Les seize regles produisent des messages strictement identiques dans
 les deux moteurs. Le JavaScript peut donc etre desactive sans qu'aucune
 donnee invalide n'atteigne la base.
 
+## Gestion des conflits
+
+Deux creneaux `[A1, A2[` et `[B1, B2[` se chevauchent si, et seulement si :
+
+```
+A1 < B2   ET   A2 > B1
+```
+
+Les inegalites sont **strictes** : une reunion de 09h00 a 10h30 et une
+autre de 10h30 a 12h00 se succedent sans se chevaucher. Des inegalites
+larges interdiraient deux reunions consecutives dans la meme salle.
+
+`core/MoteurReservation.php` verifie sept contraintes en une passe :
+existence et statut de la salle, batiment en service, capacite,
+horaires d'ouverture, duree minimale et maximale, maintenance couvrant
+le creneau, chevauchement avec une autre reservation.
+
+**Concurrence.** Entre la verification et l'insertion, deux demandes
+simultanees pourraient toutes deux se croire libres. L'ecriture a donc
+lieu dans une transaction qui relit les creneaux concurrents avec
+`FOR UPDATE` : InnoDB verrouille l'intervalle et la seconde demande
+attend, puis relit des donnees a jour et detecte le conflit.
+
+Verifie : cinq processus lances simultanement sur le meme creneau
+donnent exactement une reservation.
+
 ## Comptes de demonstration
 
 | Role | Adresse | Mot de passe |
@@ -111,7 +137,7 @@ donnee invalide n'atteigne la base.
 - [x] Authentification, roles et controles de saisie
 - [x] CRUD Batiments et Etages
 - [x] CRUD Salles, equipements, maintenance
-- [ ] Moteur de reservation et de detection de conflits
+- [x] Moteur de reservation et de detection de conflits
 - [ ] Calendrier interactif
 - [ ] Validation des demandes et deplacement de reunions
 - [ ] Statistiques et rapports

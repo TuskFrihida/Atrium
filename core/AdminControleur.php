@@ -29,7 +29,30 @@ abstract class AdminControleur extends Controleur
     public function __construct()
     {
         $this->exigerRole(...$this->rolesAutorises);
+        $this->cloturerLesReunionsPassees();
         $this->alimenterBarreLaterale();
+    }
+
+    /**
+     * Bascule en « terminee » les reunions confirmees dont le creneau
+     * est ecoule.
+     *
+     * Une tache planifiee serait plus orthodoxe, mais elle suppose un
+     * ordonnanceur que l'on ne maitrise pas toujours. Le traitement est
+     * donc declenche a l'ouverture du back-office : une seule mise a
+     * jour indexee, executee au plus une fois par quart d'heure grace
+     * a une marque en session.
+     */
+    private function cloturerLesReunionsPassees(): void
+    {
+        $derniere = (int) Session::obtenir('__derniere_cloture', 0);
+
+        if (time() - $derniere < 900) {
+            return;
+        }
+
+        Session::definir('__derniere_cloture', time());
+        (new Reservation())->cloturerLesPassees();
     }
 
     /**
