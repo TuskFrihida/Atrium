@@ -39,6 +39,17 @@ final class Courriel
     private static bool $chargee = false;
 
     /**
+     * L'expediteur, conserve d'un envoi a l'autre.
+     *
+     * Ouvrir une session SMTP coute une resolution DNS, une poignee de
+     * main TLS et une authentification : environ deux secondes. Valider
+     * vingt demandes d'un coup en paierait vingt fois le prix. On garde
+     * donc la connexion ouverte (SMTPKeepAlive) et l'on reutilise la
+     * meme instance pour toute la duree de la requete HTTP.
+     */
+    private static ?PHPMailer $expediteur = null;
+
+    /**
      * Compose puis expedie un courriel.
      *
      * @param string               $email    Destinataire
@@ -159,27 +170,13 @@ final class Courriel
         self::chargerBibliotheque();
 
         try {
-            $courriel = new PHPMailer(true);
+            $courriel = self::expediteur();
 
-            $courriel->isSMTP();
-            $courriel->Host       = MAIL_HOTE;
-            $courriel->Port       = MAIL_PORT;
-            $courriel->SMTPAuth   = true;
-            $courriel->Username   = MAIL_UTILISATEUR;
-            // Google presente le mot de passe d'application par groupes
-            // de quatre : les espaces sont decoratifs, pas significatifs.
-            $courriel->Password   = str_replace(' ', '', MAIL_MOTDEPASSE);
-            $courriel->SMTPSecure = MAIL_SECURITE === 'ssl'
-                ? PHPMailer::ENCRYPTION_SMTPS
-                : PHPMailer::ENCRYPTION_STARTTLS;
-
-            $courriel->CharSet  = PHPMailer::CHARSET_UTF8;
-            $courriel->Encoding = PHPMailer::ENCODING_BASE64;
-            $courriel->Timeout  = 12;
-
-            $courriel->setFrom(MAIL_EXPEDITEUR, MAIL_EXPEDITEUR_NOM);
+            // La connexion etant reutilisee, les destinataires du message
+            // precedent doivent etre effaces : sans cela, le second
+            // courriel partirait aussi au premier destinataire.
+            $courriel->clearAddresses();
             $courriel->addAddress($email, $nom);
-            $courriel->addReplyTo(MAIL_EXPEDITEUR, MAIL_EXPEDITEUR_NOM);
 
             $courriel->isHTML(true);
             $courriel->Subject = $sujet;
@@ -202,6 +199,40 @@ final class Courriel
 
             return false;
         }
+    }
+
+    /**
+     * L'instance PHPMailer de la requete, configuree une seule fois.
+     */
+    private static function expediteur(): PHPMailer
+    {
+        if (self::$expediteur !== null) {
+            return self::$expediteur;
+        }
+
+        $courriel = new PHPMailer(true);
+
+        $courriel->isSMTP();
+        $courriel->Host          = MAIL_HOTE;
+        $courriel->Port          = MAIL_PORT;
+        $courriel->SMTPAuth      = true;
+        $courriel->SMTPKeepAlive = true;   // la connexion reste ouverte
+        $courriel->Username      = MAIL_UTILISATEUR;
+        // Google presente le mot de passe d'application par groupes de
+        // quatre : les espaces sont decoratifs, pas significatifs.
+        $courriel->Password      = str_replace(' ', '', MAIL_MOTDEPASSE);
+        $courriel->SMTPSecure    = MAIL_SECURITE === 'ssl'
+            ? PHPMailer::ENCRYPTION_SMTPS
+            : PHPMailer::ENCRYPTION_STARTTLS;
+
+        $courriel->CharSet  = PHPMailer::CHARSET_UTF8;
+        $courriel->Encoding = PHPMailer::ENCODING_BASE64;
+        $courriel->Timeout  = 12;
+
+        $courriel->setFrom(MAIL_EXPEDITEUR, MAIL_EXPEDITEUR_NOM);
+        $courriel->addReplyTo(MAIL_EXPEDITEUR, MAIL_EXPEDITEUR_NOM);
+
+        return self::$expediteur = $courriel;
     }
 
     /** Charge PHPMailer a la demande : inutile de le lire a chaque page. */
