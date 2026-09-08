@@ -285,6 +285,16 @@ les heures sans prevenir deux fois — et refuse de s'executer depuis un
 navigateur. Sous Windows, le Planificateur de taches suffit a
 l'automatiser.
 
+## Documentation
+
+`docs/GUIDE.md` explique l'ensemble du projet : l'architecture MVC, le
+role de chaque dossier et de chaque .htaccess, le cycle de vie d'une
+requete, le noyau fichier par fichier, le schema de la base et ses
+index, la carte complete des routes, les points d'entree JSON, la
+securite point par point, le parcours de test, les questions
+susceptibles d'etre posees en soutenance et le deroule d'une
+demonstration.
+
 ## Etat d'avancement
 
 - [x] Structure MVC, configuration, controleur frontal
